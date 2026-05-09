@@ -1,32 +1,21 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { useMemo, useState } from 'react'
-import confetti from 'canvas-confetti'
-import GrungeButton from './GrungeButton.jsx'
-import PunkDivider from './PunkDivider.jsx'
-import StampBadge from './StampBadge.jsx'
-import TapeStrip from './TapeStrip.jsx'
-import WobblyCircle from './WobblyCircle.jsx'
+import confetti from 'canvas-confetti';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useRef, useState } from 'react';
+import GrungeButton from './GrungeButton.jsx';
+import PunkDivider from './PunkDivider.jsx';
+import StampBadge from './StampBadge.jsx';
+import TapeStrip from './TapeStrip.jsx';
+import WobblyCircle from './WobblyCircle.jsx';
 
-const spring = { type: 'spring', stiffness: 180, damping: 16 }
+const springCfg = (reduce) =>
+  reduce ? { duration: 0 } : { type: 'spring', stiffness: 180, damping: 16 };
 
-const CONFETTI_COLORS = ['#f5e642', '#d42b2b', '#7fff00', '#f0e8d8', '#1a1612']
-
-const ghostStyle = {
-  position: 'absolute',
-  top: '-0.1em',
-  left: '-0.05em',
-  fontFamily: 'var(--font-slab)',
-  fontWeight: 900,
-  textTransform: 'uppercase',
-  fontSize: 'clamp(100px, 22vw, 200px)',
-  lineHeight: 0.85,
-  color: 'var(--c-paper)',
-  opacity: 0.05,
-  pointerEvents: 'none',
-  userSelect: 'none',
-  whiteSpace: 'nowrap',
-  zIndex: 0,
-}
+const view = (reduce) => ({
+  initial: reduce ? false : { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.15 },
+  transition: springCfg(reduce),
+});
 
 const COURSES = [
   {
@@ -34,191 +23,222 @@ const COURSES = [
     featured: true,
     emoji: '🥟',
     name: 'Cucina cinese vegetariana',
-    description:
-      'Ravioli, mapo tofu, pancakes al cipollotto — l’esperienza completa. Camilla ha passato 3 giorni a decidere che questa era “quella”.',
+    desc: "Ravioli, mapo tofu, pancakes al cipollotto — l'esperienza completa. Camilla ha passato 3 giorni a decidere che questa era \"quella\".",
     tags: ['dumplings', 'plant-based', '2,5 h'],
   },
   {
     id: 'ramen',
     emoji: '🍜',
     name: 'Ramen da zero (vegano)',
-    description:
-      'Brodo, tare e topping fatti a mano. Profondamente cozy. Profondamente te.',
+    desc: 'Brodo, tare e topping fatti a mano. Profondamente cozy. Profondamente te.',
     tags: ['ramen', 'vegano', 'immersivo'],
   },
   {
     id: 'mezze',
     emoji: '🌿',
     name: 'Mezze mediterranee & fermenti',
-    description:
-      'Hummus, labneh, limoni in conserva, cose fermentate. Perfetto per chi ha una hot girl shelf di condimenti.',
+    desc: 'Hummus, labneh, limoni in conserva, cose fermentate. Perfetto per chi ha una hot girl shelf di condimenti.',
     tags: ['mezze', 'fermenti', 'vegetariano'],
   },
-]
+];
 
-function burstConfetti() {
-  const y = 0.88
-  const opts = (x, n) => ({
-    particleCount: n,
+const CONFETTI_COLORS = ['#f5e642', '#d42b2b', '#7fff00', '#f0e8d8', '#1a1612'];
+
+function fireConfetti() {
+  const base = {
     spread: 88,
     startVelocity: 42,
     gravity: 1.05,
     ticks: 95,
-    origin: { x, y },
     colors: CONFETTI_COLORS,
-    scalar: 1.05,
-  })
-  confetti(opts(0.5, 70))
-  confetti(opts(0.28, 40))
-  confetti(opts(0.72, 40))
+  };
+  confetti({ ...base, particleCount: 70, origin: { x: 0.5, y: 0.55 } });
+  confetti({ ...base, particleCount: 40, origin: { x: 0.15, y: 0.55 } });
+  confetti({ ...base, particleCount: 40, origin: { x: 0.85, y: 0.55 } });
 }
 
 export default function CourseSelector() {
-  const reduced = useReducedMotion()
-  const [selected, setSelected] = useState(null)
-  const [toast, setToast] = useState(false)
-  const cards = useMemo(() => COURSES, [])
+  const reduce = useReducedMotion();
+  const spr = springCfg(reduce);
+  const [selected, setSelected] = useState(null);
+  const [toast, setToast] = useState(false);
+  const toastTimer = useRef(0);
 
   const choose = (id) => {
-    setSelected(id)
-    setToast(true)
-    if (!reduced) burstConfetti()
-    window.setTimeout(() => setToast(false), 2800)
-  }
+    setSelected(id);
+    setToast(true);
+    fireConfetti();
+    window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(false), 4200);
+  };
 
   return (
-    <motion.section
-      id="setlist"
-      className="relative overflow-hidden py-10 md:py-14"
-      initial={reduced ? false : { opacity: 0, y: 20 }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={spring}
-    >
-      <span aria-hidden="true" style={ghostStyle}>
+    <section className="relative overflow-hidden py-10 md:py-14">
+      <span className="ghostWord" aria-hidden>
         SCEGLI
       </span>
+      <div
+        className="noiseLayer pointer-events-none absolute inset-0 z-[0] opacity-[0.08]"
+        aria-hidden
+      />
 
-      <div className="relative z-[1]">
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-paper/75">// scegli la tua traccia //</p>
+      <div className="relative z-[1] mx-auto max-w-6xl px-5 md:px-8">
+        <motion.p
+          {...view(reduce)}
+          className="font-mono text-[11px] uppercase tracking-[0.25em] text-red"
+        >
+          {'// '}scegli la tua traccia{' //'}
+        </motion.p>
 
-        <div className="mt-6 flex flex-wrap items-end gap-3">
-          <span className="font-slab text-[60px] font-black uppercase leading-none text-paper">seleziona</span>
+        <motion.div
+          {...view(reduce)}
+          className="mt-6 flex flex-wrap items-end gap-3"
+        >
+          <span className="font-slab text-[60px] font-black uppercase leading-none text-paper">
+            seleziona
+          </span>
           <span
-            className="font-hand text-[50px] font-semibold text-yellow"
-            style={{ transform: 'rotate(1deg)', display: 'inline-block' }}
+            className="inline-block font-hand text-[50px] text-yellow"
+            style={{ transform: 'rotate(1deg)' }}
           >
             il corso
           </span>
-        </div>
+        </motion.div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-start">
-          {cards.map((c, idx) => {
-            const isSelected = selected === c.id
-            const dim = Boolean(selected) && !isSelected
-            const offset = idx === 0 ? 'mt-0' : idx === 1 ? 'mt-0 md:mt-6' : 'mt-0 md:mt-3'
-            const borderTone = isSelected
-              ? 'border-2 border-lime bg-[rgba(127,255,0,0.04)]'
-              : c.featured
-                ? 'border-2 border-paper/35'
-                : 'border border-paper/15'
+        <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-[1fr_1.1fr_0.9fr]">
+          {COURSES.map((c, idx) => {
+            const isSelected = selected === c.id;
+            const dimmed = selected && !isSelected;
+            const stagger = idx === 0 ? '' : idx === 1 ? 'md:mt-6' : 'md:mt-3';
+
+            let borderClass = 'border border-[rgba(240,232,216,0.14)]';
+            let bgClass = 'bg-[rgba(240,232,216,0.04)]';
+            if (c.featured && !isSelected) {
+              borderClass = 'border-2 border-yellow';
+            }
+            if (isSelected) {
+              borderClass = 'border-2 border-lime';
+              bgClass = 'bg-[rgba(127,255,0,0.05)]';
+            }
 
             return (
               <motion.article
                 key={c.id}
-                className={['relative z-[1] overflow-visible rounded-none bg-[rgba(240,232,216,0.04)] p-6', borderTone, offset, dim ? 'opacity-40' : ''].join(
-                  ' ',
-                )}
-                style={dim ? { filter: 'grayscale(0.4)' } : undefined}
-                initial={false}
-                whileHover={reduced || dim ? undefined : { y: -3 }}
-                animate={isSelected && !reduced ? { scale: 1.02 } : { scale: 1 }}
-                transition={spring}
+                {...view(reduce)}
+                transition={{ ...spr, delay: reduce ? 0 : 0.06 * idx }}
+                className={`relative ${stagger} ${bgClass} ${borderClass} p-5 transition-opacity duration-200 ${
+                  dimmed ? 'opacity-[0.38]' : ''
+                }`}
+                style={dimmed ? { filter: 'grayscale(0.5)' } : undefined}
               >
-                {c.featured ? (
+                {c.featured && (
                   <>
-                    <div className="pointer-events-none absolute -left-2 -top-2 z-[2]">
-                      <TapeStrip x={0} y={0} rotation={-3} width={88} tone="paper" />
-                    </div>
-                    <StampBadge color="var(--c-paper)" rotation={8} className="absolute -right-3 -top-4 z-[3] bg-bg">
+                    <TapeStrip
+                      width={88}
+                      rotation={-3}
+                      tone="yellow"
+                      className="absolute -left-1 -top-1 z-[1]"
+                    />
+                    <StampBadge
+                      color="var(--c-red)"
+                      rotation={8}
+                      className="absolute -right-3 -top-4 z-[2] max-w-[220px] !text-[10px]"
+                      style={{ letterSpacing: '0.12em' }}
+                    >
                       ★ scelta di camilla
                     </StampBadge>
                   </>
-                ) : null}
+                )}
 
-                <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                  config-{String(idx + 1).padStart(2, '0')}
-                </div>
+                <p className="font-mono text-[10px] uppercase tracking-wide text-muted">
+                  config-0{idx + 1}
+                </p>
 
-                <div className="relative mx-auto mb-4 h-[88px] w-[88px] smear">
+                <div className="relative mx-auto mt-4 inline-flex h-20 w-20 items-center justify-center smear">
                   <WobblyCircle
-                    color="var(--c-paper)"
+                    size={80}
+                    color="var(--c-yellow)"
                     strokeWidth={2}
-                    className="pointer-events-none absolute inset-0 h-full w-full scale-90 opacity-70"
+                    className="pointer-events-none absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                   />
-                  <div className="relative z-[1] flex h-full items-center justify-center text-4xl">{c.emoji}</div>
+                  <span className="relative z-[1] text-4xl">{c.emoji}</span>
                 </div>
 
-                <h3 className="font-slab text-[22px] font-bold uppercase leading-tight text-paper">{c.name}</h3>
-                <p className="mt-3 line-clamp-3 font-body text-sm lowercase leading-relaxed text-muted">{c.description}</p>
+                <h3 className="mt-4 font-slab text-[22px] font-bold uppercase leading-tight text-paper">
+                  {c.name}
+                </h3>
+                <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted">{c.desc}</p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {c.tags.map((t) => (
                     <span
                       key={t}
-                      className="border border-paper/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-paper/80"
-                      style={{ borderRadius: 0 }}
+                      className="font-mono text-[10px] uppercase text-[rgba(240,232,216,0.75)]"
+                      style={{
+                        border: '1px solid rgba(240,232,216,0.2)',
+                        padding: '2px 8px',
+                        borderRadius: 0,
+                      }}
                     >
                       {t}
                     </span>
                   ))}
                 </div>
 
-                <GrungeButton className="mt-4 w-full" onClick={() => choose(c.id)} aria-pressed={isSelected}>
-                  scegli questo →
+                <GrungeButton
+                  onClick={() => choose(c.id)}
+                  className="mt-5"
+                  aria-pressed={isSelected}
+                >
+                  {isSelected ? '✓ confermato' : 'scegli questo →'}
                 </GrungeButton>
 
                 <AnimatePresence>
-                  {isSelected ? (
+                  {isSelected && (
                     <motion.div
-                      key="ok"
-                      className="pointer-events-none absolute -left-2 bottom-4 z-[3]"
-                      initial={reduced ? false : { scale: 0, rotate: -20, opacity: 0 }}
-                      animate={reduced ? false : { scale: 1, rotate: -6, opacity: 1 }}
-                      exit={reduced ? undefined : { scale: 0, opacity: 0 }}
-                      transition={spring}
+                      key="stamp"
+                      initial={reduce ? false : { scale: 0, rotate: -20, opacity: 0 }}
+                      animate={{ scale: 1, rotate: -6, opacity: 1 }}
+                      exit={reduce ? undefined : { scale: 0, rotate: -20, opacity: 0 }}
+                      transition={spr}
+                      className="absolute -left-2 bottom-4 z-[3]"
                     >
                       <StampBadge color="var(--c-lime)" rotation={-6}>
                         ✓ confermato
                       </StampBadge>
                     </motion.div>
-                  ) : null}
+                  )}
                 </AnimatePresence>
               </motion.article>
-            )
+            );
           })}
         </div>
-
-        <PunkDivider className="mt-10" />
-        <hr className="xerox-hr mt-2" />
-
-        <AnimatePresence>
-          {toast ? (
-            <motion.div
-              key="toast"
-              role="status"
-              aria-live="polite"
-              className="fixed inset-x-0 bottom-0 z-[70] bg-red py-4 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-paper"
-              initial={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
-              transition={reduced ? { duration: 0.12 } : { type: 'tween', duration: 0.2, ease: 'easeOut' }}
-            >
-              ★ scelta confermata — camilla la farà succedere ★
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
       </div>
-    </motion.section>
-  )
+
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={reduce ? false : { y: 56, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={reduce ? undefined : { y: 56, opacity: 0 }}
+            transition={spr}
+            className="fixed bottom-0 left-0 right-0 z-[120] bg-red py-4"
+            role="status"
+            aria-live="polite"
+          >
+            <p className="text-center font-mono text-[11px] uppercase tracking-[0.2em] text-paper">
+              ★ scelta confermata — camilla la farà succedere ★
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="relative z-[1] mt-14">
+        <div className="tornStrip" aria-hidden />
+        <PunkDivider />
+        <hr className="xerox-hr" />
+      </div>
+    </section>
+  );
 }

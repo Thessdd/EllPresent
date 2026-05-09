@@ -1,14 +1,30 @@
-export default function StampBadge({ color = 'var(--c-red)', rotation = -8, className = '', children }) {
+function resolveColor(color) {
+  if (!color) return 'var(--c-paper)';
+  if (color.startsWith('var(')) return color;
+  if (color.startsWith('--')) return `var(${color})`;
+  return color;
+}
+
+export default function StampBadge({
+  color,
+  rotation = -8,
+  children,
+  className = '',
+  style: styleProp = {},
+}) {
+  const c = resolveColor(color);
   return (
     <span
-      className={['stamp', className].join(' ')}
+      className={`stamp ${className}`.trim()}
       style={{
-        color,
+        color: c,
+        background: 'transparent',
+        boxShadow: `inset 0 0 0 1px ${c}`,
+        ...styleProp,
         transform: `rotate(${rotation}deg)`,
       }}
     >
       {children}
     </span>
-  )
+  );
 }
-

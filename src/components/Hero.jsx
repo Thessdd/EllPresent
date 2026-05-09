@@ -1,181 +1,169 @@
-import { motion, useReducedMotion } from 'framer-motion'
-import PunkDivider from './PunkDivider.jsx'
-import StampBadge from './StampBadge.jsx'
-import TapeStrip from './TapeStrip.jsx'
+import { motion, useReducedMotion } from 'framer-motion';
+import Marquee from './Marquee.jsx';
+import PunkDivider from './PunkDivider.jsx';
+import StampBadge from './StampBadge.jsx';
+import TapeStrip from './TapeStrip.jsx';
 
-const spring = { type: 'spring', stiffness: 180, damping: 16 }
-
-const MARQUEE_LINE =
-  '★ ELL 26 ★ QUEER ★ VEGETARIANA ★ PUNK ★ DA CAMILLA CON AMORE ★\u00a0★ ELL 26 ★ QUEER ★ VEGETARIANA ★ PUNK ★ DA CAMILLA CON AMORE ★\u00a0'
+const springCfg = (reduce) =>
+  reduce ? { duration: 0 } : { type: 'spring', stiffness: 180, damping: 16 };
 
 export default function Hero() {
-  const reduced = useReducedMotion()
+  const reduce = useReducedMotion();
+  const spr = springCfg(reduce);
 
-  const fly = (i = 0) =>
-    reduced ? false : { opacity: 0, x: -14 + (i % 2) * 8, y: 20 + i * 4, rotate: -5 + i }
-
-  const settle = (rot = 0) => (reduced ? {} : { opacity: 1, x: 0, y: 0, rotate: rot })
+  const line = (delay, props) => ({
+    initial: reduce ? false : props.initial,
+    animate: reduce ? props.animate : props.animate,
+    transition: { ...spr, delay: reduce ? 0 : delay },
+  });
 
   return (
-    <section
-      id="hero"
-      className="relative left-1/2 w-screen min-h-screen -translate-x-1/2 overflow-hidden bg-bg"
-    >
-      <motion.div
-        className="relative z-[1] w-full bg-red py-2.5 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-paper"
-        initial={reduced ? false : { opacity: 0, y: -12 }}
-        animate={reduced ? false : { opacity: 1, y: 0 }}
-        transition={reduced ? undefined : spring}
-      >
-        ★ evento speciale ★ ingresso: gratuito ★ data: 2025 ★
-      </motion.div>
+    <section className="heroHatch relative min-h-screen overflow-hidden">
+      <div className="splatOverlay" aria-hidden />
+      <div
+        className="noiseLayer pointer-events-none absolute inset-0 z-[0]"
+        aria-hidden
+      />
 
-      <div className="relative z-[1] mx-auto max-w-6xl px-5 pb-6 pt-5 md:pb-8 md:pt-8">
-        <div className="relative z-[2] min-h-[58vh] max-w-[920px]">
-          <motion.div
-            className="font-slab font-black uppercase leading-[0.92] text-paper"
-            style={{
-              fontSize: 'clamp(72px, 18vw, 140px)',
-              transform: 'rotate(-3deg)',
-              transformOrigin: '0% 50%',
-            }}
-            initial={fly(0)}
-            animate={settle(-3)}
-            transition={reduced ? undefined : { ...spring, delay: 0.08 }}
-          >
-            buon
-          </motion.div>
+      <div className="relative z-[2]">
+        <Marquee text="★ ELL 26 ★ QUEER ★ VEGETARIANA ★ PUNK ★ DA CAMILLA CON AMORE" />
 
-          <motion.div
-            className="-mt-2 font-hand font-semibold italic leading-[0.9] text-yellow sm:-mt-4"
-            style={{
-              fontSize: 'clamp(88px, 22vw, 160px)',
-              transform: 'rotate(2deg)',
-              transformOrigin: '0% 50%',
-            }}
-            initial={fly(1)}
-            animate={settle(2)}
-            transition={reduced ? undefined : { ...spring, delay: 0.16 }}
-          >
-            26°
-          </motion.div>
+        <div className="relative mx-auto max-w-[1000px] px-5 pb-16 pt-6 md:px-10 md:pb-20 md:pt-10">
+          <div className="relative">
+            <motion.div
+              {...line(0, {
+                initial: { x: -20, y: 28, rotate: -8, opacity: 0 },
+                animate: { x: 0, y: 0, rotate: -3, opacity: 1 },
+              })}
+              className="font-slab font-black uppercase leading-[0.82] text-paper"
+              style={{
+                fontSize: 'clamp(80px,18vw,148px)',
+                transformOrigin: 'left center',
+              }}
+            >
+              BUON
+            </motion.div>
 
-          <motion.div
-            className="-mt-1 font-slab font-black uppercase leading-[0.88]"
-            style={{
-              fontSize: 'clamp(88px, 24vw, 170px)',
-              WebkitTextStroke: '2px var(--c-lime)',
-              color: 'transparent',
-              transform: 'rotate(-1deg)',
-              transformOrigin: '0% 50%',
-            }}
-            initial={fly(2)}
-            animate={settle(-1)}
-            transition={reduced ? undefined : { ...spring, delay: 0.24 }}
-          >
-            ell
-          </motion.div>
+            <motion.div
+              {...line(0.08, {
+                initial: { x: 20, y: 24, rotate: 8, opacity: 0 },
+                animate: { x: 0, y: 0, rotate: 2, opacity: 1 },
+              })}
+              className="font-hand font-bold italic leading-[0.85] text-yellow"
+              style={{
+                fontSize: 'clamp(96px,22vw,170px)',
+              }}
+            >
+              26°
+            </motion.div>
 
-          <motion.div
-            className="mt-1 font-hand text-[140px] leading-none text-paper"
-            style={{ transform: 'rotate(5deg)', transformOrigin: '0% 50%' }}
-            initial={fly(3)}
-            animate={settle(5)}
-            transition={reduced ? undefined : { ...spring, delay: 0.32 }}
-          >
-            ✦
-          </motion.div>
+            <motion.div
+              {...line(0.16, {
+                initial: { x: -28, y: 20, rotate: -6, opacity: 0 },
+                animate: { x: 0, y: 0, rotate: -1.5, opacity: 1 },
+              })}
+              className="font-slab font-black uppercase leading-[0.82]"
+              style={{
+                fontSize: 'clamp(96px,26vw,185px)',
+                color: 'transparent',
+                WebkitTextStroke: '2.5px var(--c-lime)',
+              }}
+            >
+              ELL
+            </motion.div>
 
-          <motion.p
-            className="mt-8 max-w-xl font-hand text-[36px] text-muted md:text-[42px]"
+            <motion.div
+              {...line(0.24, {
+                initial: { scale: 0.3, rotate: 25, opacity: 0 },
+                animate: { scale: 1, rotate: 5, opacity: 1 },
+              })}
+              className="font-hand leading-none text-red"
+              style={{
+                fontSize: '140px',
+                marginTop: '-0.1em',
+              }}
+            >
+              ✦
+            </motion.div>
+          </div>
+
+          <p
+            className="font-hand mt-8 max-w-[580px] text-[36px] text-muted"
             style={{ transform: 'rotate(-1.5deg)' }}
-            initial={reduced ? false : { opacity: 0, y: 16, x: -8 }}
-            animate={reduced ? false : { opacity: 1, y: 0, x: 0 }}
-            transition={reduced ? undefined : { ...spring, delay: 0.4 }}
           >
             questo è il tuo regalo — da Camilla con tutto il cuore 🫀
-          </motion.p>
+          </p>
 
           <motion.div
-            className="absolute left-0 top-[34%] md:left-[2%]"
-            initial={reduced ? false : { x: -52, opacity: 0 }}
-            animate={reduced ? false : { x: 0, opacity: 1 }}
-            transition={reduced ? undefined : { ...spring, delay: 0.36 }}
-            aria-hidden="true"
+            className="absolute right-2 top-4 md:right-6 md:top-8"
+            initial={reduce ? false : { scale: 0.5, rotate: -14, opacity: 0 }}
+            animate={{ scale: 1, rotate: -7, opacity: 1 }}
+            transition={{ ...spr, delay: reduce ? 0 : 0.35 }}
           >
-            <TapeStrip x={0} y={0} rotation={-4} width={92} tone="paper" />
-          </motion.div>
-          <motion.div
-            className="absolute left-[40%] top-[2%] md:left-[44%]"
-            initial={reduced ? false : { x: 48, opacity: 0 }}
-            animate={reduced ? false : { x: 0, opacity: 1 }}
-            transition={reduced ? undefined : { ...spring, delay: 0.28 }}
-            aria-hidden="true"
-          >
-            <TapeStrip x={0} y={0} rotation={3} width={78} />
-          </motion.div>
-          <motion.div
-            className="absolute right-0 top-[48%] md:right-[4%]"
-            initial={reduced ? false : { x: 56, opacity: 0 }}
-            animate={reduced ? false : { x: 0, opacity: 1 }}
-            transition={reduced ? undefined : { ...spring, delay: 0.44 }}
-            aria-hidden="true"
-          >
-            <TapeStrip x={0} y={0} rotation={-2} width={100} />
-          </motion.div>
-
-          <motion.div
-            className="absolute right-0 top-24 z-10 md:right-4 md:top-28"
-            initial={reduced ? false : { scale: 0.5, rotate: -20, opacity: 0 }}
-            animate={reduced ? false : { scale: 1, rotate: -7, opacity: 1 }}
-            transition={reduced ? undefined : { ...spring, delay: 0.42 }}
-          >
-            <StampBadge color="var(--c-yellow)" rotation={-7}>
+            <StampBadge color="--c-yellow" rotation={-7}>
               anno xxvi
             </StampBadge>
           </motion.div>
+
           <motion.div
-            className="absolute bottom-8 left-0 z-10 md:bottom-12"
-            initial={reduced ? false : { scale: 0.5, rotate: 14, opacity: 0 }}
-            animate={reduced ? false : { scale: 1, rotate: -9, opacity: 1 }}
-            transition={reduced ? undefined : { ...spring, delay: 0.5 }}
+            className="absolute bottom-28 left-2 md:bottom-32 md:left-6"
+            initial={reduce ? false : { scale: 0.5, rotate: -18, opacity: 0 }}
+            animate={{ scale: 1, rotate: -9, opacity: 1 }}
+            transition={{ ...spr, delay: reduce ? 0 : 0.42 }}
           >
-            <StampBadge color="var(--c-paper)" rotation={-9}>
+            <StampBadge color="--c-red" rotation={-9}>
               queer ★ punk
             </StampBadge>
           </motion.div>
+
           <motion.div
-            className="absolute right-[6%] top-[42%] z-10 hidden md:block"
-            initial={reduced ? false : { scale: 0.5, rotate: 16, opacity: 0 }}
-            animate={reduced ? false : { scale: 1, rotate: 6, opacity: 1 }}
-            transition={reduced ? undefined : { ...spring, delay: 0.46 }}
+            className="absolute right-4 top-[42%] hidden md:block"
+            initial={reduce ? false : { scale: 0.5, rotate: 12, opacity: 0 }}
+            animate={{ scale: 1, rotate: 6, opacity: 1 }}
+            transition={{ ...spr, delay: reduce ? 0 : 0.5 }}
           >
-            <StampBadge color="var(--c-paper)" rotation={6}>
+            <StampBadge color="--c-lime" rotation={6}>
               vegetariana
             </StampBadge>
           </motion.div>
+
+          <motion.div
+            className="absolute left-[28%] top-[32%] z-[3]"
+            initial={reduce ? false : { x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ ...spr, delay: reduce ? 0 : 0.28 }}
+          >
+            <TapeStrip width={94} rotation={-4} tone="paper" />
+          </motion.div>
+          <motion.div
+            className="absolute right-[8%] top-[12%] z-[3]"
+            initial={reduce ? false : { x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ ...spr, delay: reduce ? 0 : 0.32 }}
+          >
+            <TapeStrip width={78} rotation={3} tone="yellow" />
+          </motion.div>
+          <motion.div
+            className="absolute right-[6%] top-[48%] z-[3]"
+            initial={reduce ? false : { x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ ...spr, delay: reduce ? 0 : 0.38 }}
+          >
+            <TapeStrip width={106} rotation={-2} tone="lime" />
+          </motion.div>
+        </div>
+
+        <div className="relative z-[2] mt-4">
+          <PunkDivider />
+          <hr className="xerox-hr" />
+          <div className="tornStrip" aria-hidden />
+          <Marquee
+            reverse
+            text="🥟 CUCINA VEGETARIANA 🥟 CINESE 🌿 PLANT-BASED 🌿 HANDMADE"
+            bgColor="var(--c-ink)"
+          />
         </div>
       </div>
-
-      <div className="relative z-[1] left-1/2 mt-8 w-screen -translate-x-1/2 overflow-hidden border-y-2 border-paper/20 bg-red py-3">
-        {reduced ? (
-          <div className="whitespace-nowrap px-5 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-paper">
-            {MARQUEE_LINE}
-          </div>
-        ) : (
-          <div className="flex w-max animate-marquee font-mono text-[11px] uppercase tracking-[0.3em] text-paper">
-            <span className="shrink-0 pr-16">{MARQUEE_LINE}</span>
-            <span className="shrink-0 pr-16" aria-hidden="true">
-              {MARQUEE_LINE}
-            </span>
-          </div>
-        )}
-      </div>
-
-      <div className="relative z-[1]">
-        <PunkDivider />
-        <hr className="xerox-hr mx-auto max-w-6xl" />
-      </div>
     </section>
-  )
+  );
 }

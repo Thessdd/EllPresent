@@ -1,29 +1,85 @@
-export default function PunkDivider({ invert = false, className = '' }) {
-  const stroke = invert ? 'rgba(240,232,216,0.40)' : 'rgba(240,232,216,0.30)'
+import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
+
+function buildZigzag(yBase, amplitude, segments = 50) {
+  const step = 60;
+  let d = `M0,${yBase}`;
+  for (let i = 1; i <= segments; i++) {
+    const x = i * step;
+    const y = yBase + (i % 2 === 0 ? amplitude : -amplitude);
+    d += ` L${x},${y}`;
+  }
+  return d;
+}
+
+const PATH1 = buildZigzag(24, 12, 50);
+const PATH2 = buildZigzag(36, 6, 50);
+
+export default function PunkDivider({ invert = false }) {
+  const reduce = useReducedMotion();
+  const p1 = useRef(null);
+  const p2 = useRef(null);
+  const [len1, setLen1] = useState(0);
+  const [len2, setLen2] = useState(0);
+
+  const stroke = invert ? 'rgba(240,232,216,0.38)' : 'rgba(240,232,216,0.25)';
+
+  useEffect(() => {
+    if (reduce) return;
+    const l1 = p1.current?.getTotalLength?.() ?? 0;
+    const l2 = p2.current?.getTotalLength?.() ?? 0;
+    setLen1(l1);
+    setLen2(l2);
+  }, [reduce]);
+
+  useEffect(() => {
+    if (reduce || !len1) return;
+    const id = requestAnimationFrame(() => {
+      if (p1.current) {
+        p1.current.style.strokeDasharray = String(len1);
+        p1.current.style.strokeDashoffset = String(len1);
+        p1.current.getBoundingClientRect();
+        p1.current.style.transition = 'stroke-dashoffset 1.1s ease-out';
+        p1.current.style.strokeDashoffset = '0';
+      }
+      if (p2.current && len2) {
+        p2.current.style.strokeDasharray = String(len2);
+        p2.current.style.strokeDashoffset = String(len2);
+        p2.current.getBoundingClientRect();
+        p2.current.style.transition = 'stroke-dashoffset 1.1s ease-out 0.08s';
+        p2.current.style.strokeDashoffset = '0';
+      }
+    });
+    return () => cancelAnimationFrame(id);
+  }, [reduce, len1, len2]);
+
   return (
-    <div className={['relative', className].join(' ')}>
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 1200 60"
-        preserveAspectRatio="none"
-        style={{ width: '100%', height: 44, display: 'block' }}
-      >
-        <path
-          d="M0,28 L60,26 L120,34 L180,22 L240,36 L300,20 L360,38 L420,24 L480,40 L540,22 L600,36 L660,18 L720,38 L780,22 L840,36 L900,20 L960,38 L1020,24 L1080,40 L1140,22 L1200,34"
-          fill="none"
-          stroke={stroke}
-          strokeWidth="3"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-        <path
-          d="M0,40 L90,44 L180,42 L270,46 L360,44 L450,48 L540,46 L630,50 L720,48 L810,52 L900,50 L990,54 L1080,52 L1170,56 L1200,54"
-          fill="none"
-          stroke={stroke}
-          strokeWidth="2"
-          opacity="0.75"
-        />
-      </svg>
-    </div>
-  )
+    <svg
+      className="block w-full"
+      viewBox="0 0 3000 48"
+      preserveAspectRatio="none"
+      height={48}
+      aria-hidden
+    >
+      <path
+        ref={p1}
+        d={PATH1}
+        fill="none"
+        stroke={stroke}
+        strokeWidth={3}
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+      <path
+        ref={p2}
+        d={PATH2}
+        fill="none"
+        stroke={stroke}
+        strokeWidth={1.5}
+        strokeOpacity={0.6}
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+    </svg>
+  );
 }

@@ -1,7 +1,7 @@
-export default function GrungeButton({ className = '', children, ...props }) {
+export default function GrungeButton({ children, onClick, className = '', ...rest }) {
   return (
-    <button type="button" className={['focusRing', 'grungeBtn', className].filter(Boolean).join(' ')} {...props}>
+    <button type="button" className={`grungeBtn focusRing ${className}`.trim()} onClick={onClick} {...rest}>
       {children}
     </button>
-  )
+  );
 }

@@ -1,35 +1,34 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{js,jsx}'],
+module.exports = {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       fontFamily: {
-        slab: ['var(--font-slab)', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
-        body: ['var(--font-body)', 'sans-serif'],
-        hand: ['var(--font-hand)', 'cursive'],
+        slab: ['Oswald', 'sans-serif'],
+        hand: ['Caveat', 'cursive'],
+        body: ['DM Sans', 'sans-serif'],
+        mono: ['Space Mono', 'monospace'],
       },
       colors: {
-        bg: 'var(--c-bg)',
-        paper: 'var(--c-paper)',
-        ink: 'var(--c-ink)',
-        red: 'var(--c-red)',
-        yellow: 'var(--c-yellow)',
-        lime: 'var(--c-lime)',
-        white: 'var(--c-white)',
-        muted: 'var(--c-muted)',
+        bg: '#0e0c0a',
+        ink: '#1a1612',
+        paper: '#f0e8d8',
+        red: '#d42b2b',
+        yellow: '#f5e642',
+        lime: '#7fff00',
+        muted: 'rgba(240,232,216,0.45)',
+        white: '#f5f0e8',
       },
       keyframes: {
-        marquee: {
-          '0%': { transform: 'translateX(0%)' },
-          '100%': { transform: 'translateX(-50%)' },
+        marqueeScroll: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
         },
       },
       animation: {
-        marquee: 'marquee 22s linear infinite',
+        marquee: 'marqueeScroll 22s linear infinite',
       },
     },
   },
   plugins: [],
-}
-
+};

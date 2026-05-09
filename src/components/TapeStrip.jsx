@@ -1,25 +1,33 @@
-export default function TapeStrip({ x = 0, y = 0, rotation = 3, width = 86, tone = 'yellow', className = '' }) {
-  const palette =
-    tone === 'paper'
-      ? { bg: 'rgba(240,232,216,0.15)', border: 'rgba(240,232,216,0.08)' }
-      : tone === 'lime'
-        ? { bg: 'rgba(127,255,0,0.10)', border: 'rgba(127,255,0,0.16)' }
-        : { bg: 'rgba(245,230,66,0.12)', border: 'rgba(245,230,66,0.18)' }
+const tones = {
+  yellow: {
+    background: 'rgba(245,230,66,0.13)',
+    border: '1px solid rgba(245,230,66,0.2)',
+  },
+  lime: {
+    background: 'rgba(127,255,0,0.11)',
+    border: '1px solid rgba(127,255,0,0.22)',
+  },
+  paper: {
+    background: 'rgba(240,232,216,0.13)',
+    border: '1px solid rgba(240,232,216,0.2)',
+  },
+};
 
-  const toCss = (v) => (typeof v === 'number' ? `${v}px` : v)
-
+export default function TapeStrip({
+  width = 86,
+  rotation = 3,
+  tone = 'yellow',
+  className = '',
+}) {
+  const t = tones[tone] ?? tones.yellow;
   return (
     <span
-      aria-hidden="true"
-      className={['tape', className].join(' ')}
+      className={`tape ${className}`.trim()}
       style={{
-        left: toCss(x),
-        top: toCss(y),
-        width,
+        width: `${width}px`,
         transform: `rotate(${rotation}deg)`,
-        background: palette.bg,
-        borderColor: palette.border,
+        ...t,
       }}
     />
-  )
+  );
 }

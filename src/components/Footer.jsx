@@ -1,50 +1,52 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react';
 
 export default function Footer() {
-  const [egg, setEgg] = useState(false)
-  const clicks = useRef(0)
-  const timer = useRef(null)
-
-  useEffect(() => {
-    return () => {
-      if (timer.current) window.clearTimeout(timer.current)
-    }
-  }, [])
+  const [unlocked, setUnlocked] = useState(false);
+  const clicks = useRef(0);
+  const reset = useRef(0);
 
   const onStar = () => {
-    clicks.current += 1
-    if (timer.current) window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(() => {
-      clicks.current = 0
-    }, 1200)
+    window.clearTimeout(reset.current);
+    clicks.current += 1;
     if (clicks.current >= 5) {
-      setEgg(true)
-      clicks.current = 0
+      setUnlocked(true);
+      clicks.current = 0;
+      return;
     }
-  }
+    reset.current = window.setTimeout(() => {
+      clicks.current = 0;
+    }, 1500);
+  };
 
   return (
-    <footer className="relative left-1/2 mt-10 w-screen -translate-x-1/2 border-t border-paper/[0.08] bg-ink py-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 md:flex-row md:items-center md:justify-between">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">progetto ell-26 © camilla 2025</div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted md:text-right">⚖️ bilancia certificata</div>
+    <footer className="relative border-t border-[rgba(240,232,216,0.08)] bg-ink py-10">
+      <button
+        type="button"
+        onClick={onStar}
+        className="absolute right-4 top-4 font-mono text-[14px] text-muted opacity-25 transition-opacity hover:opacity-50"
+        aria-label="Segreto"
+      >
+        ★
+      </button>
+
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 md:flex-row md:justify-between md:gap-6">
+        <p className="font-mono text-[10px] uppercase text-muted md:max-w-[55%]">
+          PROGETTO ELL-26 © CAMILLA 2025
+        </p>
+        <p className="font-mono text-[10px] uppercase text-muted md:text-right">
+          ⚖️ BILANCIA CERTIFICATA
+        </p>
       </div>
-      <div className="mx-auto mt-8 max-w-6xl px-5 text-center">
-        <p className="font-hand text-[13px] text-muted">fatto con panico, amore, e troppi ripensamenti</p>
-        <button
-          type="button"
-          onClick={onStar}
-          className="focusRing mt-4 font-mono text-[11px] text-muted/40 hover:text-muted/70"
-          aria-label="Segreto"
-        >
-          ★
-        </button>
-      </div>
-      {egg ? (
-        <p className="mx-auto mt-4 max-w-6xl px-5 text-center font-hand text-base text-lime">
+
+      <p className="mt-6 text-center font-hand text-[15px] text-muted">
+        fatto con panico, amore, e troppi ripensamenti
+      </p>
+
+      {unlocked && (
+        <p className="mt-4 px-5 text-center font-hand text-lg text-lime">
           🌈 tequila ha approvato questo sito. la gatta giudica severamente.
         </p>
-      ) : null}
+      )}
     </footer>
-  )
+  );
 }
