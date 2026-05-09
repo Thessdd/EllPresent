@@ -19,7 +19,7 @@ export default function GiftReveal() {
   const spr = springCfg(reduce);
 
   return (
-    <section className="relative overflow-hidden py-10 md:py-14">
+    <section className="zineGrunge relative overflow-hidden py-8 md:py-10">
       <span className="ghostWord" aria-hidden>
         CIBO
       </span>

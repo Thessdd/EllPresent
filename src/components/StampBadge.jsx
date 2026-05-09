@@ -19,7 +19,6 @@ export default function StampBadge({
       style={{
         color: c,
         background: 'transparent',
-        boxShadow: `inset 0 0 0 1px ${c}`,
         ...styleProp,
         transform: `rotate(${rotation}deg)`,
       }}

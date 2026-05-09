@@ -18,7 +18,13 @@ export default function LibraDisclaimer() {
   const reduce = useReducedMotion();
 
   return (
-    <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-red py-14 md:py-20">
+    <section
+      className="relative left-1/2 w-screen overflow-hidden bg-red py-10 md:py-12"
+      style={{
+        transform: 'translateX(-50%) skewY(-1.5deg)',
+        marginTop: '-10px',
+      }}
+    >
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.07]"
         aria-hidden
@@ -31,7 +37,10 @@ export default function LibraDisclaimer() {
         </div>
       </div>
 
-      <div className="relative z-[1] mx-auto max-w-4xl px-5 text-center">
+      <div
+        className="relative z-[1] mx-auto max-w-4xl px-5 text-center"
+        style={{ transform: 'skewY(1.5deg)' }}
+      >
         <motion.div {...view(reduce)}>
           <p className="font-slab text-[72px] font-black uppercase leading-none text-paper">
             ⚖️ CAMILLA
@@ -63,7 +72,7 @@ export default function LibraDisclaimer() {
         </motion.div>
       </div>
 
-      <div className="relative z-[1] mt-10">
+      <div className="relative z-[1] mt-10" style={{ transform: 'skewY(1.5deg)' }}>
         <PunkDivider invert />
         <hr className="xerox-hr" />
       </div>

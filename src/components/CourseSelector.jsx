@@ -44,6 +44,12 @@ const COURSES = [
 
 const CONFETTI_COLORS = ['#f5e642', '#d42b2b', '#7fff00', '#f0e8d8', '#1a1612'];
 
+const CARD_POSE = [
+  { rotate: -1.2, y: 0 },
+  { rotate: 0.8, y: 8 },
+  { rotate: -0.5, y: -4 },
+];
+
 function fireConfetti() {
   const base = {
     spread: 88,
@@ -73,7 +79,7 @@ export default function CourseSelector() {
   };
 
   return (
-    <section className="relative overflow-hidden py-10 md:py-14">
+    <section className="zineGrunge relative overflow-hidden py-8 md:py-10">
       <span className="ghostWord" aria-hidden>
         SCEGLI
       </span>
@@ -111,22 +117,24 @@ export default function CourseSelector() {
             const dimmed = selected && !isSelected;
             const stagger = idx === 0 ? '' : idx === 1 ? 'md:mt-6' : 'md:mt-3';
 
-            let borderClass = 'border border-[rgba(240,232,216,0.14)]';
-            let bgClass = 'bg-[rgba(240,232,216,0.04)]';
-            if (c.featured && !isSelected) {
-              borderClass = 'border-2 border-yellow';
-            }
-            if (isSelected) {
-              borderClass = 'border-2 border-lime';
-              bgClass = 'bg-[rgba(127,255,0,0.05)]';
-            }
+            const pose = CARD_POSE[idx] ?? CARD_POSE[0];
+            const flyerMods = [
+              'courseFlyer',
+              c.featured && !isSelected ? 'courseFlyer--featured' : '',
+              isSelected ? 'courseFlyer--selected' : '',
+            ]
+              .filter(Boolean)
+              .join(' ');
 
             return (
               <motion.article
                 key={c.id}
-                {...view(reduce)}
+                initial={reduce ? false : { opacity: 0, y: 20, ...pose }}
+                whileInView={{ opacity: 1, ...pose }}
+                whileHover={reduce ? undefined : { rotate: 0, y: -8, transition: { duration: 0.15 } }}
+                viewport={{ once: true, amount: 0.15 }}
                 transition={{ ...spr, delay: reduce ? 0 : 0.06 * idx }}
-                className={`relative ${stagger} ${bgClass} ${borderClass} p-5 transition-opacity duration-200 ${
+                className={`relative p-5 transition-opacity duration-200 ${stagger} ${flyerMods} ${
                   dimmed ? 'opacity-[0.38]' : ''
                 }`}
                 style={dimmed ? { filter: 'grayscale(0.5)' } : undefined}

@@ -17,10 +17,13 @@ export default function PersonalNote() {
 
   return (
     <section
-      className="relative overflow-hidden py-10 md:py-14"
+      className="zineGrunge relative overflow-hidden py-8 md:py-10"
       style={{
-        background:
-          'linear-gradient(160deg, rgba(72,52,96,0.12) 0%, rgba(240,232,216,0.03) 45%, rgba(26,22,18,0.4) 100%)',
+        backgroundColor: 'rgba(30,22,16,0.9)',
+        backgroundImage:
+          "url('https://www.transparenttextures.com/patterns/old-mathematics.png')",
+        backgroundBlendMode: 'multiply',
+        backgroundSize: '300px 300px',
       }}
     >
       <span className="ghostWord" aria-hidden>
@@ -73,8 +76,11 @@ export default function PersonalNote() {
           </div>
 
           <p
-            className="mt-10 inline-block font-hand text-[68px] text-yellow"
-            style={{ transform: 'rotate(-2deg)' }}
+            className="mt-10 inline-block font-hand text-[80px] text-[#f5e642] md:text-[96px]"
+            style={{
+              transform: 'rotate(-2deg)',
+              textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
+            }}
           >
             — Camilla
           </p>

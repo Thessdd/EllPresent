@@ -19,7 +19,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative border-t border-[rgba(240,232,216,0.08)] bg-ink py-10">
+    <footer className="relative border-t border-[rgba(240,232,216,0.08)] bg-ink py-8 md:py-10">
       <button
         type="button"
         onClick={onStar}
