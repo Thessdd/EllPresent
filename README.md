@@ -22,3 +22,4 @@ npm run preview
 
 Progetto Vite statico. Il `vercel.json` include la rewrite richiesta.
 
+# EllPresent
