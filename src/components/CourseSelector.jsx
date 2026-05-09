@@ -1,8 +1,15 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import confetti from 'canvas-confetti'
-import SchematicPanel from './SchematicPanel.jsx'
-import SpecRow from './SpecRow.jsx'
+import GrungeButton from './GrungeButton.jsx'
+import PunkDivider from './PunkDivider.jsx'
+import StampBadge from './StampBadge.jsx'
+import TapeStrip from './TapeStrip.jsx'
+import WobblyCircle from './WobblyCircle.jsx'
+
+const spring = { type: 'spring', stiffness: 180, damping: 16 }
+
+const CONFETTI_COLORS = ['#f5e642', '#d42b2b', '#7fff00', '#f0e8d8', '#1a1612']
 
 const COURSES = [
   {
@@ -12,13 +19,7 @@ const COURSES = [
     name: 'Cucina cinese vegetariana',
     description:
       'Ravioli, mapo tofu, pancakes al cipollotto — l’esperienza completa. Camilla ha passato 3 giorni a decidere che questa era “quella”.',
-    tags: ['dumplings', 'plant-based', '2,5 ore'],
-    stamp: '// RACCOMANDATO //',
-    specs: [
-      ['MODALITÀ', 'HANDS-ON'],
-      ['LIVELLO', 'BEGINNER-FRIENDLY'],
-      ['FOCUS', 'UMAMI VEGETALE'],
-    ],
+    tags: ['dumplings', 'plant-based', '2,5 h'],
   },
   {
     id: 'ramen',
@@ -27,11 +28,6 @@ const COURSES = [
     description:
       'Brodo, tare e topping fatti a mano. Profondamente cozy. Profondamente te.',
     tags: ['ramen', 'vegano', 'immersivo'],
-    specs: [
-      ['MODALITÀ', 'IMMERSIVA'],
-      ['LIVELLO', 'MEDIO'],
-      ['OUTPUT', 'BRODO + TARE'],
-    ],
   },
   {
     id: 'mezze',
@@ -39,194 +35,171 @@ const COURSES = [
     name: 'Mezze mediterranee & fermenti',
     description:
       'Hummus, labneh, limoni in conserva, cose fermentate. Perfetto per chi ha una hot girl shelf di condimenti.',
-    tags: ['mezze', 'fermentazione', 'fun fact: anche vegetariano'],
-    specs: [
-      ['MODALITÀ', 'DEGUSTAZIONE'],
-      ['LIVELLO', 'FACILE'],
-      ['BONUS', 'FERMENTI'],
-    ],
+    tags: ['mezze', 'fermenti', 'vegetariano'],
   },
 ]
 
-function usePrefersReducedMotion() {
-  const reduced = useReducedMotion()
-  return reduced
-}
-
 function burstConfetti() {
-  const originY = 0.9
-  confetti({
-    particleCount: 65,
-    spread: 70,
-    startVelocity: 32,
-    origin: { x: 0.5, y: originY },
-    colors: ['#c8f73e', '#4a9eff', '#c8dff0', '#2a6bbf'],
+  const y = 0.88
+  const opts = (x, n) => ({
+    particleCount: n,
+    spread: 88,
+    startVelocity: 42,
+    gravity: 1.05,
+    ticks: 95,
+    origin: { x, y },
+    colors: CONFETTI_COLORS,
+    scalar: 1.05,
   })
-  confetti({
-    particleCount: 35,
-    spread: 120,
-    startVelocity: 22,
-    origin: { x: 0.35, y: originY },
-    colors: ['#c8f73e', '#4a9eff', '#c8dff0'],
-  })
-  confetti({
-    particleCount: 35,
-    spread: 120,
-    startVelocity: 22,
-    origin: { x: 0.65, y: originY },
-    colors: ['#c8f73e', '#4a9eff', '#c8dff0'],
-  })
+  confetti(opts(0.5, 70))
+  confetti(opts(0.28, 40))
+  confetti(opts(0.72, 40))
 }
 
 export default function CourseSelector() {
-  const reducedMotion = usePrefersReducedMotion()
+  const reduced = useReducedMotion()
   const [selected, setSelected] = useState(null)
   const [toast, setToast] = useState(false)
-
   const cards = useMemo(() => COURSES, [])
 
   const choose = (id) => {
     setSelected(id)
     setToast(true)
-    if (!reducedMotion) burstConfetti()
-    window.setTimeout(() => setToast(false), 2400)
+    if (!reduced) burstConfetti()
+    window.setTimeout(() => setToast(false), 2800)
   }
 
   return (
-    <div className="py-10 md:py-14">
-      <SchematicPanel
-        id="sheet-04"
-        label="SHEET 04 — AVAILABLE CONFIGURATIONS — SELECT ONE"
-        className="mt-8"
-      >
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <div className="font-mono text-xl font-bold uppercase tracking-[0.14em] text-cream">
-              seleziona configurazione
-            </div>
-            <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueMuted">
-              // una sola selezione consentita. errori gestiti con grazia. //
-            </div>
-          </div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-blueMuted">
-            input: click / invio • output: felicità
-          </div>
-        </div>
+    <motion.section
+      id="setlist"
+      className="py-14 md:py-20"
+      initial={reduced ? false : { opacity: 0, y: 20 }}
+      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={spring}
+    >
+      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-red">// scegli la tua traccia //</p>
 
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {cards.map((c, idx) => {
-            const isSelected = selected === c.id
-            const dim = selected && !isSelected
-            const accent = c.featured ? 'lime' : 'blue'
-            const border = isSelected
-              ? '1px solid rgba(200,247,62,0.95)'
-              : c.featured
-                ? '1px solid rgba(200,247,62,0.55)'
-                : '1px solid rgba(74,158,255,0.22)'
+      <div className="mt-6 flex flex-wrap items-end gap-3">
+        <span className="font-slab text-[60px] font-black uppercase leading-none text-paper">seleziona</span>
+        <span
+          className="font-hand text-[50px] font-semibold text-yellow"
+          style={{ transform: 'rotate(1deg)', display: 'inline-block' }}
+        >
+          il corso
+        </span>
+      </div>
 
-            return (
-              <motion.div
-                key={c.id}
-                className={['schematicPanel relative p-5', dim ? 'opacity-50' : 'opacity-100'].join(' ')}
-                style={{
-                  border,
-                  borderRadius: 2,
-                  boxShadow: isSelected ? '0 0 20px rgba(200,247,62,0.20)' : '0 0 18px rgba(74,158,255,0.10)',
-                }}
-                whileHover={reducedMotion ? undefined : { y: -4 }}
-                animate={isSelected && !reducedMotion ? { scale: 1.02 } : { scale: 1 }}
-                transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-              >
-                <div className="border border-blueLight/15 bg-bg/35 px-4 py-3">
-                  <div className="grid grid-cols-[82px_34px_1fr] items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueMuted">
-                    <div className="text-cream">{`CONFIG-${String(idx + 1).padStart(2, '0')}`}</div>
-                    <div className="text-base text-cream">{c.emoji}</div>
-                    <div className={c.featured ? 'text-lime' : 'text-blueLight'}>
-                      ← {c.featured ? 'featured' : 'standard'}
-                    </div>
-                  </div>
-                </div>
+      <div className="mt-12 grid gap-5 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-start">
+        {cards.map((c, idx) => {
+          const isSelected = selected === c.id
+          const dim = Boolean(selected) && !isSelected
+          const offset = idx === 0 ? 'mt-0' : idx === 1 ? 'mt-0 md:mt-6' : 'mt-0 md:mt-3'
+          const borderTone = isSelected
+            ? 'border-2 border-lime bg-[rgba(127,255,0,0.04)]'
+            : c.featured
+              ? 'border-2 border-yellow'
+              : 'border border-paper/15'
 
+          return (
+            <motion.article
+              key={c.id}
+              className={['relative overflow-visible rounded-none bg-[rgba(240,232,216,0.04)] p-6', borderTone, offset, dim ? 'opacity-40' : ''].join(
+                ' ',
+              )}
+              style={dim ? { filter: 'grayscale(0.4)' } : undefined}
+              initial={false}
+              whileHover={reduced || dim ? undefined : { y: -3 }}
+              animate={isSelected && !reduced ? { scale: 1.02 } : { scale: 1 }}
+              transition={spring}
+            >
                 {c.featured ? (
-                  <div className="mt-3 inline-block border border-lime/45 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-lime">
-                    {c.stamp}
-                  </div>
+                  <>
+                    <div className="pointer-events-none absolute -left-2 -top-2 z-[1]">
+                      <TapeStrip x={0} y={0} rotation={-3} width={88} />
+                    </div>
+                    <StampBadge
+                      color="var(--c-red)"
+                      rotation={8}
+                      className="absolute -right-3 -top-4 z-[2] bg-bg"
+                    >
+                      ★ scelta di camilla
+                    </StampBadge>
+                  </>
                 ) : null}
 
-                {isSelected ? (
-                  <div className="absolute right-3 top-3 rotate-[8deg] border border-lime/55 px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-lime">
-                    confirmed ✓
-                  </div>
-                ) : null}
-
-                <div className="mt-4 font-mono text-sm font-bold uppercase tracking-[0.12em] text-cream">
-                  {c.name}
+                <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+                  config-{String(idx + 1).padStart(2, '0')}
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-text/80">{c.description}</p>
 
-                <div className="mt-4 space-y-2">
-                  {c.specs.map(([k, v]) => (
-                    <SpecRow key={k} label={k} value={v} accent={accent} />
-                  ))}
+                <div className="relative mx-auto mb-4 h-[88px] w-[88px] smear">
+                  <WobblyCircle
+                    color="var(--c-yellow)"
+                    strokeWidth={2}
+                    className="pointer-events-none absolute inset-0 h-full w-full scale-90"
+                  />
+                  <div className="relative z-[1] flex h-full items-center justify-center text-4xl">{c.emoji}</div>
                 </div>
+
+                <h3 className="font-slab text-[22px] font-bold uppercase leading-tight text-paper">{c.name}</h3>
+                <p className="mt-3 line-clamp-3 font-body text-sm lowercase leading-relaxed text-muted">{c.description}</p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {c.tags.map((t) => (
                     <span
                       key={t}
-                      className="border border-blueLight/18 bg-bg/35 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-blueMuted"
+                      className="border border-paper/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-paper/80"
+                      style={{ borderRadius: 0 }}
                     >
                       {t}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-6">
-                  <button
-                    type="button"
-                    className={[
-                      'focusRing w-full border px-4 py-3 font-mono text-[11px] uppercase tracking-[0.16em]',
-                      c.featured ? 'border-lime/50 text-lime hover:bg-lime/10' : 'border-blueLight/30 text-blueLight hover:bg-blueLight/10',
-                    ].join(' ')}
-                    onClick={() => choose(c.id)}
-                    aria-pressed={isSelected}
-                  >
-                    seleziona config → 
-                  </button>
-                </div>
-              </motion.div>
-            )
-          })}
-        </div>
-      </SchematicPanel>
+                <GrungeButton className="mt-4 w-full" onClick={() => choose(c.id)} aria-pressed={isSelected}>
+                  scegli questo →
+                </GrungeButton>
 
-      <motion.div
-        role="status"
-        aria-live="polite"
-        className="pointer-events-none fixed inset-x-0 bottom-4 z-50 mx-auto flex max-w-xl justify-center px-4"
-        initial={false}
-        animate={
-          toast && !reducedMotion
-            ? { y: 0, opacity: 1 }
-            : toast
-              ? { y: 0, opacity: 1 }
-              : { y: 18, opacity: 0 }
-        }
-        transition={{ duration: reducedMotion ? 0 : 0.25, ease: 'easeOut' }}
-      >
-        <div className="schematicPanel w-full border border-blueLight/25 bg-bg/80 px-5 py-4 text-center backdrop-blur">
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-blueMuted">
-            ✦ perfect choice —
-          </span>{' '}
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-cream">
-            camilla la farà succedere
-          </span>{' '}
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-blueMuted">
-            ✦
-          </span>
-        </div>
-      </motion.div>
-    </div>
+                <AnimatePresence>
+                  {isSelected ? (
+                    <motion.div
+                      key="ok"
+                      className="pointer-events-none absolute -left-2 bottom-4 z-[3]"
+                      initial={reduced ? false : { scale: 0, rotate: -20, opacity: 0 }}
+                      animate={reduced ? false : { scale: 1, rotate: -6, opacity: 1 }}
+                      exit={reduced ? undefined : { scale: 0, opacity: 0 }}
+                      transition={spring}
+                    >
+                      <StampBadge color="var(--c-lime)" rotation={-6}>
+                        ✓ confermato
+                      </StampBadge>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+            </motion.article>
+          )
+        })}
+      </div>
+
+      <PunkDivider className="mt-16" />
+      <hr className="xerox-hr mt-2" />
+
+      <AnimatePresence>
+        {toast ? (
+          <motion.div
+            key="toast"
+            role="status"
+            aria-live="polite"
+            className="fixed inset-x-0 bottom-0 z-[70] bg-red py-4 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-paper"
+            initial={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
+            transition={reduced ? { duration: 0.12 } : { type: 'tween', duration: 0.2, ease: 'easeOut' }}
+          >
+            ★ scelta confermata — camilla la farà succedere ★
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </motion.section>
   )
 }
-

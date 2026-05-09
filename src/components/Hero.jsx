@@ -1,153 +1,166 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import AnnotationLine from './AnnotationLine.jsx'
-import SchematicPanel from './SchematicPanel.jsx'
+import PunkDivider from './PunkDivider.jsx'
+import StampBadge from './StampBadge.jsx'
+import TapeStrip from './TapeStrip.jsx'
 
-function StaggerLetters({ text, className }) {
-  const reduced = useReducedMotion()
-  const letters = Array.from(text)
-  return (
-    <span className={className} aria-label={text} role="text">
-      {letters.map((ch, i) => (
-        <motion.span
-          key={`${ch}-${i}`}
-          initial={reduced ? false : { opacity: 0, y: 10 }}
-          animate={reduced ? false : { opacity: 1, y: 0 }}
-          transition={
-            reduced
-              ? undefined
-              : { duration: 0.55, ease: 'easeOut', delay: 0.02 * i }
-          }
-          style={{ display: 'inline-block', whiteSpace: ch === ' ' ? 'pre' : 'normal' }}
-        >
-          {ch}
-        </motion.span>
-      ))}
-    </span>
-  )
-}
+const spring = { type: 'spring', stiffness: 180, damping: 16 }
 
 export default function Hero() {
   const reduced = useReducedMotion()
 
+  const fly = (i = 0) =>
+    reduced ? false : { opacity: 0, x: -14 + (i % 2) * 8, y: 20 + i * 4, rotate: -5 + i }
+
+  const settle = (rot = 0) => (reduced ? {} : { opacity: 1, x: 0, y: 0, rotate: rot })
+
   return (
-    <section id="sheet-01" className="min-h-[calc(100vh-110px)] pb-10 pt-10 md:pt-12">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-7 border border-blueLight/20 bg-surface/30">
-          <div className="grid grid-cols-2 gap-0 md:grid-cols-4">
-            {[
-              ['PROJECT', 'ELL_26_BIRTHDAY'],
-              ['CLIENT', 'CAMILLA'],
-              ['DATE', '2025'],
-              ['REV', 'A'],
-            ].map(([k, v]) => (
-              <div
-                key={k}
-                className="border-b border-blueLight/15 border-r border-blueLight/15 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-blueMuted"
-              >
-                <div className="opacity-70">{k}:</div>
-                <div className="mt-1 text-cream">{v}</div>
-              </div>
-            ))}
-          </div>
+    <section
+      id="hero"
+      className="relative left-1/2 w-screen min-h-screen -translate-x-1/2 overflow-hidden bg-bg"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.055]"
+        style={{
+          backgroundImage: `repeating-linear-gradient(
+            45deg,
+            rgba(240,232,216,0.14) 0px,
+            rgba(240,232,216,0.14) 1px,
+            transparent 1px,
+            transparent 14px
+          )`,
+        }}
+      />
+
+      <motion.div
+        className="w-full bg-red py-2.5 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-paper"
+        initial={reduced ? false : { opacity: 0, y: -12 }}
+        animate={reduced ? false : { opacity: 1, y: 0 }}
+        transition={reduced ? undefined : spring}
+      >
+        ★ evento speciale ★ ingresso: gratuito ★ data: 2025 ★
+      </motion.div>
+
+      <div className="relative mx-auto max-w-6xl px-5 pb-8 pt-6 md:pb-12 md:pt-10">
+        <div className="relative z-[2] min-h-[58vh] max-w-[920px]">
+          <motion.div
+            className="font-slab text-[clamp(56px,14vw,110px)] font-black uppercase leading-[0.92] text-paper"
+            style={{ transform: 'rotate(-3deg)', transformOrigin: '0% 50%' }}
+            initial={fly(0)}
+            animate={settle(-3)}
+            transition={reduced ? undefined : { ...spring, delay: 0.08 }}
+          >
+            buon
+          </motion.div>
+
+          <motion.div
+            className="-mt-2 font-hand text-[clamp(72px,18vw,130px)] font-semibold italic leading-[0.9] text-yellow sm:-mt-4"
+            style={{ transform: 'rotate(2deg)', transformOrigin: '0% 50%' }}
+            initial={fly(1)}
+            animate={settle(2)}
+            transition={reduced ? undefined : { ...spring, delay: 0.16 }}
+          >
+            26°
+          </motion.div>
+
+          <motion.div
+            className="-mt-1 font-slab text-[clamp(72px,20vw,140px)] font-black uppercase leading-[0.88]"
+            style={{
+              WebkitTextStroke: '2px var(--c-lime)',
+              color: 'transparent',
+              transform: 'rotate(-1deg)',
+              transformOrigin: '0% 50%',
+            }}
+            initial={fly(2)}
+            animate={settle(-1)}
+            transition={reduced ? undefined : { ...spring, delay: 0.24 }}
+          >
+            ell
+          </motion.div>
+
+          <motion.div
+            className="mt-1 font-hand text-[80px] leading-none text-red"
+            style={{ transform: 'rotate(5deg)', transformOrigin: '0% 50%' }}
+            initial={fly(3)}
+            animate={settle(5)}
+            transition={reduced ? undefined : { ...spring, delay: 0.32 }}
+          >
+            ✦
+          </motion.div>
+
+          <motion.p
+            className="mt-8 max-w-xl font-hand text-[32px] text-muted"
+            style={{ transform: 'rotate(-1.5deg)' }}
+            initial={reduced ? false : { opacity: 0, y: 16, x: -8 }}
+            animate={reduced ? false : { opacity: 1, y: 0, x: 0 }}
+            transition={reduced ? undefined : { ...spring, delay: 0.4 }}
+          >
+            questo è il tuo regalo — da Camilla con tutto il cuore 🫀
+          </motion.p>
+
+          <motion.div
+            className="absolute left-0 top-[34%] md:left-[2%]"
+            initial={reduced ? false : { x: -52, opacity: 0 }}
+            animate={reduced ? false : { x: 0, opacity: 1 }}
+            transition={reduced ? undefined : { ...spring, delay: 0.36 }}
+            aria-hidden="true"
+          >
+            <TapeStrip x={0} y={0} rotation={-4} width={92} tone="paper" />
+          </motion.div>
+          <motion.div
+            className="absolute left-[40%] top-[2%] md:left-[44%]"
+            initial={reduced ? false : { x: 48, opacity: 0 }}
+            animate={reduced ? false : { x: 0, opacity: 1 }}
+            transition={reduced ? undefined : { ...spring, delay: 0.28 }}
+            aria-hidden="true"
+          >
+            <TapeStrip x={0} y={0} rotation={3} width={78} />
+          </motion.div>
+          <motion.div
+            className="absolute right-0 top-[48%] md:right-[4%]"
+            initial={reduced ? false : { x: 56, opacity: 0 }}
+            animate={reduced ? false : { x: 0, opacity: 1 }}
+            transition={reduced ? undefined : { ...spring, delay: 0.44 }}
+            aria-hidden="true"
+          >
+            <TapeStrip x={0} y={0} rotation={-2} width={100} tone="lime" />
+          </motion.div>
+
+          <motion.div
+            className="absolute right-0 top-24 z-10 md:right-4 md:top-28"
+            initial={reduced ? false : { scale: 0.5, rotate: -20, opacity: 0 }}
+            animate={reduced ? false : { scale: 1, rotate: -7, opacity: 1 }}
+            transition={reduced ? undefined : { ...spring, delay: 0.42 }}
+          >
+            <StampBadge color="var(--c-yellow)" rotation={-7}>
+              anno xxvi
+            </StampBadge>
+          </motion.div>
+          <motion.div
+            className="absolute bottom-8 left-0 z-10 md:bottom-12"
+            initial={reduced ? false : { scale: 0.5, rotate: 14, opacity: 0 }}
+            animate={reduced ? false : { scale: 1, rotate: -9, opacity: 1 }}
+            transition={reduced ? undefined : { ...spring, delay: 0.5 }}
+          >
+            <StampBadge color="var(--c-red)" rotation={-9}>
+              queer ★ punk
+            </StampBadge>
+          </motion.div>
+          <motion.div
+            className="absolute right-[6%] top-[42%] z-10 hidden md:block"
+            initial={reduced ? false : { scale: 0.5, rotate: 16, opacity: 0 }}
+            animate={reduced ? false : { scale: 1, rotate: 6, opacity: 1 }}
+            transition={reduced ? undefined : { ...spring, delay: 0.46 }}
+          >
+            <StampBadge color="var(--c-lime)" rotation={6}>
+              vegetariana
+            </StampBadge>
+          </motion.div>
         </div>
-
-        <SchematicPanel label="SHEET 01 — SUBJECT" className="overflow-hidden">
-          <div className="relative">
-            <div className="absolute right-4 top-4 hidden font-mono text-[10px] uppercase tracking-[0.18em] text-blueMuted md:block">
-              SCALA 1:1
-            </div>
-            <div className="absolute bottom-4 left-4 hidden font-mono text-[10px] uppercase tracking-[0.18em] text-blueMuted md:block">
-              NOTA: contiene amore in eccesso
-            </div>
-            <div className="absolute right-4 top-12 hidden font-mono text-[10px] uppercase tracking-[0.18em] text-blueMuted md:block">
-              TOLLERANZA: ±∞
-            </div>
-
-            <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-start">
-              <div className="leading-none">
-                <div className="relative">
-                  <StaggerLetters
-                    text="HAPPY"
-                    className="bpTextStroke font-mono text-[64px] uppercase tracking-[0.12em] md:text-[92px]"
-                  />
-                  <div className="mt-2">
-                    <AnnotationLine label="← stato emotivo certificato" />
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <StaggerLetters
-                    text="26th"
-                    className="font-mono text-[76px] uppercase tracking-[0.12em] text-cream md:text-[120px]"
-                  />
-                  <div className="mt-3 flex items-center gap-3">
-                    <div className="h-[10px] w-[22px] border-l border-t border-blueLight/45" aria-hidden="true" />
-                    <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-blueMuted">
-                      ∅ 26 ANNI
-                    </div>
-                    <div className="h-[10px] w-[22px] border-r border-t border-blueLight/45" aria-hidden="true" />
-                  </div>
-                </div>
-
-                <div className="mt-7">
-                  <div className="relative inline-block">
-                    <div className="bpLimeStroke font-display text-[64px] italic md:text-[88px]">
-                      Ell ✦
-                    </div>
-                    <div className="mt-2">
-                      <AnnotationLine label="← anomalia nel sistema (necessaria)" />
-                    </div>
-                  </div>
-                </div>
-
-                <motion.p
-                  className="mt-8 inline-block max-w-2xl font-note text-[28px] text-blueMuted/80"
-                  initial={reduced ? false : { opacity: 0, y: 10 }}
-                  animate={reduced ? false : { opacity: 1, y: 0 }}
-                  transition={reduced ? undefined : { delay: 0.55, duration: 0.6, ease: 'easeOut' }}
-                >
-                  <span className="relative">
-                    questo è il tuo regalo — da Camilla 🫀
-                    <span
-                      aria-hidden="true"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px]"
-                      style={{
-                        background:
-                          'linear-gradient(90deg, rgba(74,158,255,0.0), rgba(74,158,255,0.55), rgba(74,158,255,0.0))',
-                        transform: 'skewX(-12deg)',
-                      }}
-                    />
-                  </span>
-                </motion.p>
-              </div>
-
-              <div className="space-y-5">
-                <div className="border border-blueLight/20 bg-bg/40 px-5 py-4">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-blueMuted">
-                    floating annotations
-                  </div>
-                  <div className="mt-3 space-y-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueMuted">
-                    <div>REF: ELL-26-B</div>
-                    <div>STATO: IN CONSEGNA</div>
-                    <div>ERRORE: EMOZIONE NON CONTENIBILE</div>
-                  </div>
-                </div>
-
-                <div className="border border-blueLight/20 bg-bg/40 px-5 py-4">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-blueMuted">
-                    disclaimer
-                  </div>
-                  <div className="mt-3 text-sm leading-relaxed text-text/80">
-                    Questo documento è un regalo. E anche un modo per dire: ho studiato il tuo
-                    cuore come una planimetria, e mi sono persa volentieri.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </SchematicPanel>
       </div>
+
+      <PunkDivider />
+      <hr className="xerox-hr mx-auto max-w-6xl" />
     </section>
   )
 }
-

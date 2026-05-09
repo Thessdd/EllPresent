@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false)
@@ -13,15 +13,17 @@ function usePrefersReducedMotion() {
   return reduced
 }
 
+const TRAIL = ['✕', '★', '•', '✗']
+const COLORS = ['var(--c-red)', 'var(--c-yellow)', 'var(--c-lime)', 'var(--c-white)']
+
 export default function SparkleCursor() {
   const reducedMotion = usePrefersReducedMotion()
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const [visible, setVisible] = useState(false)
-  const [glyph, setGlyph] = useState('+')
+  const [trail, setTrail] = useState([])
+  const lastSpawn = useRef(0)
 
-  const isCoarsePointer = useMemo(() => {
-    return window.matchMedia?.('(pointer: coarse)')?.matches ?? false
-  }, [])
+  const isCoarsePointer = useMemo(() => window.matchMedia?.('(pointer: coarse)')?.matches ?? false, [])
 
   useEffect(() => {
     if (reducedMotion || isCoarsePointer) return
@@ -29,9 +31,15 @@ export default function SparkleCursor() {
     const onMove = (e) => {
       setVisible(true)
       setPos({ x: e.clientX, y: e.clientY })
-      if ((e.movementX ?? 0) !== 0 || (e.movementY ?? 0) !== 0) {
-        const r = Math.random()
-        setGlyph(r < 0.72 ? '+' : r < 0.86 ? '◈' : r < 0.95 ? '○' : '·')
+
+      const moved = Math.abs(e.movementX ?? 0) + Math.abs(e.movementY ?? 0)
+      const now = performance.now()
+      if (moved > 2 && now - lastSpawn.current > 28) {
+        lastSpawn.current = now
+        const g = TRAIL[Math.floor(Math.random() * TRAIL.length)]
+        const c = COLORS[Math.floor(Math.random() * COLORS.length)]
+        const id = `${now}-${Math.random()}`
+        setTrail((t) => [...t.slice(-14), { id, x: e.clientX, y: e.clientY, g, c }])
       }
     }
     const onLeave = () => setVisible(false)
@@ -44,37 +52,53 @@ export default function SparkleCursor() {
     }
   }, [reducedMotion, isCoarsePointer])
 
+  useEffect(() => {
+    if (reducedMotion || isCoarsePointer) return
+    const t = window.setInterval(() => {
+      setTrail((prev) => (prev.length ? prev.slice(1) : prev))
+    }, 90)
+    return () => window.clearInterval(t)
+  }, [reducedMotion, isCoarsePointer])
+
   if (reducedMotion || isCoarsePointer) return null
 
   return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        transform: `translate3d(${pos.x}px, ${pos.y}px, 0)`,
-        zIndex: 60,
-        pointerEvents: 'none',
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 200ms ease',
-      }}
-    >
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100]" style={{ mixBlendMode: 'normal' }}>
+      {trail.map((p, i) => (
+        <span
+          key={p.id}
+          style={{
+            position: 'fixed',
+            left: p.x,
+            top: p.y,
+            transform: 'translate(-50%, -50%)',
+            color: p.c,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 12 + (i % 3),
+            opacity: 0.15 + (i / trail.length) * 0.55,
+          }}
+        >
+          {p.g}
+        </span>
+      ))}
+
       <div
         style={{
+          position: 'fixed',
+          left: pos.x,
+          top: pos.y,
           transform: 'translate(-50%, -50%)',
-          color: 'var(--c-blue-light)',
+          zIndex: 101,
+          opacity: visible ? 1 : 0,
+          transition: 'opacity 160ms ease',
+          color: 'var(--c-red)',
           fontFamily: 'var(--font-mono)',
-          fontSize: 14,
-          textShadow: '0 0 16px rgba(74,158,255,0.25)',
-          mixBlendMode: 'screen',
+          fontSize: 16,
+          fontWeight: 700,
         }}
       >
-        <span style={{ color: glyph === '◈' ? 'var(--c-lime)' : 'var(--c-blue-light)' }}>
-          {glyph}
-        </span>
+        ✕
       </div>
     </div>
   )
 }
-

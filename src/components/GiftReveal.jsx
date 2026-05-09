@@ -1,60 +1,68 @@
-import SchematicPanel from './SchematicPanel.jsx'
-import AnnotationLine from './AnnotationLine.jsx'
-import SpecRow from './SpecRow.jsx'
+import { motion, useReducedMotion } from 'framer-motion'
+import PunkDivider from './PunkDivider.jsx'
+import StampBadge from './StampBadge.jsx'
+import WobblyCircle from './WobblyCircle.jsx'
+
+const spring = { type: 'spring', stiffness: 180, damping: 16 }
 
 export default function GiftReveal() {
+  const reduced = useReducedMotion()
+
   return (
-    <div className="py-10 md:py-14">
-      <SchematicPanel
-        id="sheet-02"
-        label="SHEET 02 — MAIN ASSEMBLY — REF: REGALO-A"
-        className="mt-10"
-      >
-        <div className="grid gap-10 md:grid-cols-[0.95fr_1.05fr] md:items-start">
-          <div className="relative">
-            <div className="border border-blueLight/20 bg-bg/40 p-6">
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-blueMuted">
-                deconstructed icon
-              </div>
-              <div className="mt-5 text-[86px] leading-none text-cream">🥟</div>
-              <div className="mt-5 space-y-2">
-                <AnnotationLine label="→ involucro: pasta a mano" />
-                <AnnotationLine label="→ ripieno: tofu + verdure" />
-                <AnnotationLine label="→ cottura: al vapore (100°C)" />
-                <AnnotationLine label="→ amore: non misurabile" />
-              </div>
-            </div>
+    <motion.section
+      id="gift"
+      className="relative py-14 md:py-20"
+      initial={reduced ? false : { opacity: 0, y: 20 }}
+      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={spring}
+    >
+      <p className="font-slab text-sm font-black uppercase tracking-[0.4em] text-red">il regalo</p>
+
+      <div className="mt-10 grid gap-12 md:grid-cols-[1.2fr_1fr] md:items-start md:gap-10">
+        <div className="relative md:mt-2">
+          <div className="relative inline-block smear">
+            <WobblyCircle className="pointer-events-none absolute left-1/2 top-1/2 h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2" />
+            <div className="relative z-[1] text-[120px] leading-none">🥟</div>
+          </div>
+          <p className="mt-6 max-w-sm font-hand text-[22px] leading-snug text-muted">
+            ravioli fatti a mano. tofu. verdure.
+            <br />
+            nessun animale coinvolto.
+            <br />
+            molto amore incluso.
+          </p>
+        </div>
+
+        <div className="md:mt-6">
+          <div className="space-y-0 font-slab font-black uppercase leading-[0.95]">
+            <div className="text-[48px] text-paper">un corso</div>
+            <div className="text-[56px] text-yellow">di cucina</div>
+            <div className="text-[72px] text-paper">cinese</div>
+            <div className="inline-block -rotate-2 text-[36px] text-lime">vegetariana</div>
           </div>
 
-          <div>
-            <div className="font-mono text-2xl font-bold uppercase tracking-[0.12em] text-cream md:text-3xl">
-              un corso di cucina
-            </div>
-            <div className="mt-2 font-mono text-sm uppercase tracking-[0.18em] text-lime">
-              cinese vegetariana
-            </div>
+          <p className="mt-8 max-w-xl font-body text-base lowercase leading-relaxed text-muted">
+            Volevo darti qualcosa che ti somiglia — creativo, intenzionale, delizioso e completamente plant-based. La
+            cucina vegetariana cinese è antica, complessa e piena di umami. Proprio come te, onestamente.
+          </p>
 
-            <div className="mt-6 space-y-2">
-              <SpecRow label="DURATA" value="UNA SERATA PERFETTA" accent="cream" />
-              <SpecRow label="INGREDIENTI" value="100% PLANT-BASED" accent="cream" />
-              <SpecRow label="DIFFICOLTÀ" value="MEDIA (CE LA FAI)" accent="cream" />
-              <SpecRow label="AMORE INCLUSO" value="SÌ" accent="lime" />
-            </div>
-
-            <div className="mt-7 border-l-2 border-blueLight/45 bg-surface/60 px-5 py-4">
-              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-blueMuted">
-                nota tecnica
-              </div>
-              <p className="mt-3 leading-relaxed text-text/85">
-                Volevo darti qualcosa che ti somiglia — creativo, intenzionale, delizioso e
-                plant-based. La cucina vegetariana cinese è antica, complessa e piena di
-                umami. Proprio come te, onestamente.
-              </p>
-            </div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <StampBadge color="var(--c-red)" rotation={-6}>
+              fatto con amore
+            </StampBadge>
+            <StampBadge color="var(--c-lime)" rotation={4}>
+              100% vegan
+            </StampBadge>
+            <StampBadge color="var(--c-yellow)" rotation={-3}>
+              panico incluso
+            </StampBadge>
           </div>
         </div>
-      </SchematicPanel>
-    </div>
+      </div>
+
+      <PunkDivider className="mt-14" />
+      <hr className="xerox-hr mt-2" />
+    </motion.section>
   )
 }
-

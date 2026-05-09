@@ -1,69 +1,43 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import SchematicPanel from './SchematicPanel.jsx'
+import PunkDivider from './PunkDivider.jsx'
+import StampBadge from './StampBadge.jsx'
+
+const spring = { type: 'spring', stiffness: 180, damping: 16 }
 
 export default function LibraDisclaimer() {
   const reduced = useReducedMotion()
 
   return (
-    <div className="py-10 md:py-14">
-      <SchematicPanel
-        id="sheet-03"
-        label="SHEET 03 — REVISION HISTORY — STATUS: ONGOING"
-        className="mt-8"
-      >
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-blueMuted">
-              registro revisioni — camilla.exe
-            </div>
-          </div>
-          <div className="shrink-0 border border-blueLight/25 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueLight">
-            bilancia certified ⚖️
-          </div>
+    <motion.section
+      className="relative left-1/2 w-screen -translate-x-1/2 bg-red py-16 md:py-24"
+      initial={reduced ? false : { opacity: 0, y: 20, scale: 0.98 }}
+      whileInView={reduced ? undefined : { opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={spring}
+    >
+      <div className="relative mx-auto max-w-4xl px-5 text-center">
+        <div className="font-slab text-[72px] font-black uppercase leading-none text-paper">⚖️ camilla</div>
+        <div className="mt-4 font-slab text-[48px] font-black uppercase leading-none text-yellow">è una</div>
+        <div className="mt-2 font-slab text-[clamp(56px,12vw,96px)] font-black uppercase tracking-[-0.02em] text-paper">
+          bilancia
         </div>
 
-        <div className="mt-6 border border-blueLight/15">
-          <div className="grid grid-cols-[80px_120px_1fr_44px] border-b border-blueLight/15 bg-bg/40 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-blueMuted">
-            <div>rev</div>
-            <div>data</div>
-            <div>nota</div>
-            <div className="text-right">stato</div>
-          </div>
-
-          {[
-            ['A', '2025-01-15', 'Prima idea: corso di sushi. Scartata.', '✗', 'text-blueMuted'],
-            ['B', '2025-03-02', 'Seconda idea: ramen. Tenuta in standby.', '◌', 'text-blueMuted'],
-            ['C', '2025-05-01', 'Cucina cinese vegetariana. APPROVATA.', '✓', 'text-lime'],
-          ].map(([rev, date, note, mark, markClass]) => (
-            <div
-              key={rev}
-              className="grid grid-cols-[80px_120px_1fr_44px] gap-0 border-b border-blueLight/10 px-4 py-3 text-sm text-text/85"
-            >
-              <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-cream">
-                {rev}
-              </div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-blueMuted">
-                {date}
-              </div>
-              <div className="leading-relaxed">{note}</div>
-              <div className={['text-right font-mono text-[12px]', markClass].join(' ')}>
-                {mark}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <motion.div
-          className="mt-7 rotate-[-1deg] font-note text-[30px] text-blueMuted/85"
-          initial={reduced ? false : { opacity: 0, y: 8 }}
-          whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={reduced ? undefined : { duration: 0.5, ease: 'easeOut', delay: 0.15 }}
+        <p
+          className="mx-auto mt-10 max-w-2xl font-hand text-[34px] text-paper/85"
+          style={{ transform: 'rotate(-1deg)' }}
         >
-          ⚖️ essendo bilancia, il processo è parte del regalo
-        </motion.div>
-      </SchematicPanel>
-    </div>
+          …quindi ha anche considerato 2 opzioni backup. Prego. O scusa. Entrambe.
+        </p>
+
+        <div className="mt-12 flex justify-end md:mt-16">
+          <StampBadge color="var(--c-yellow)" rotation={-5} className="bg-red">
+            indecisione certificata
+          </StampBadge>
+        </div>
+      </div>
+
+      <PunkDivider invert className="mt-14" />
+      <hr className="mx-auto max-w-6xl border-0 opacity-90" style={{ height: 1, background: 'rgba(240,232,216,0.18)' }} />
+    </motion.section>
   )
 }
-
