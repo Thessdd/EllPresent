@@ -1,69 +1,60 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import SchematicPanel from './SchematicPanel.jsx'
+import AnnotationLine from './AnnotationLine.jsx'
+import SpecRow from './SpecRow.jsx'
 
 export default function GiftReveal() {
-  const reduced = useReducedMotion()
-
   return (
-    <section id="regalo" className="py-14 md:py-18">
-      <div className="mb-6 flex items-baseline justify-between gap-4">
-        <h2 className="font-mono text-sm tracking-wider text-text/75">
-          // IL REGALO //
-        </h2>
-        <div className="hidden font-mono text-xs text-text/45 md:block">
-          (spoiler: è vegetale. ovvio.)
-        </div>
-      </div>
-
-      <motion.article
-        className="zineCard peel mx-auto max-w-3xl p-7 md:p-10"
-        style={{ transform: 'rotate(-2deg)' }}
-        initial={reduced ? false : { opacity: 0, y: 18 }}
-        whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={reduced ? undefined : { duration: 0.7, ease: 'easeOut' }}
-        whileHover={
-          reduced
-            ? undefined
-            : {
-                rotate: -1,
-                y: -4,
-                transition: { duration: 0.2 },
-              }
-        }
+    <div className="py-10 md:py-14">
+      <SchematicPanel
+        id="sheet-02"
+        label="SHEET 02 — MAIN ASSEMBLY — REF: REGALO-A"
+        className="mt-10"
       >
-        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-          <div className="min-w-0">
-            <div className="font-mono text-sm text-lime">🥢🌿</div>
-            <h3 className="mt-3 font-mono text-2xl font-bold tracking-tight">
-              Un corso di cucina cinese vegetariana
-            </h3>
-            <p className="mt-2 text-text/75">
-              perché tu riesci a far sembrare le verdure un intero universo
-            </p>
+        <div className="grid gap-10 md:grid-cols-[0.95fr_1.05fr] md:items-start">
+          <div className="relative">
+            <div className="border border-blueLight/20 bg-bg/40 p-6">
+              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-blueMuted">
+                deconstructed icon
+              </div>
+              <div className="mt-5 text-[86px] leading-none text-cream">🥟</div>
+              <div className="mt-5 space-y-2">
+                <AnnotationLine label="→ involucro: pasta a mano" />
+                <AnnotationLine label="→ ripieno: tofu + verdure" />
+                <AnnotationLine label="→ cottura: al vapore (100°C)" />
+                <AnnotationLine label="→ amore: non misurabile" />
+              </div>
+            </div>
           </div>
 
-          <div className="shrink-0 self-start rounded-2xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-xs text-text/70">
-            <div className="text-text/50">tempo stimato</div>
-            <div className="text-lime">una serata perfetta</div>
+          <div>
+            <div className="font-mono text-2xl font-bold uppercase tracking-[0.12em] text-cream md:text-3xl">
+              un corso di cucina
+            </div>
+            <div className="mt-2 font-mono text-sm uppercase tracking-[0.18em] text-lime">
+              cinese vegetariana
+            </div>
+
+            <div className="mt-6 space-y-2">
+              <SpecRow label="DURATA" value="UNA SERATA PERFETTA" accent="cream" />
+              <SpecRow label="INGREDIENTI" value="100% PLANT-BASED" accent="cream" />
+              <SpecRow label="DIFFICOLTÀ" value="MEDIA (CE LA FAI)" accent="cream" />
+              <SpecRow label="AMORE INCLUSO" value="SÌ" accent="lime" />
+            </div>
+
+            <div className="mt-7 border-l-2 border-blueLight/45 bg-surface/60 px-5 py-4">
+              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-blueMuted">
+                nota tecnica
+              </div>
+              <p className="mt-3 leading-relaxed text-text/85">
+                Volevo darti qualcosa che ti somiglia — creativo, intenzionale, delizioso e
+                plant-based. La cucina vegetariana cinese è antica, complessa e piena di
+                umami. Proprio come te, onestamente.
+              </p>
+            </div>
           </div>
         </div>
-
-        <p className="mt-6 max-w-2xl leading-relaxed text-text/85">
-          Volevo darti qualcosa che ti somiglia — creativo, intenzionale, delizioso e
-          completamente plant-based. La cucina vegetariana cinese è antica, complessa e
-          piena di umami senza un solo animale coinvolto. Proprio come te, onestamente.
-        </p>
-
-        <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-text/65">
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2 font-mono">
-            ✦ fatto con panico + amore
-          </span>
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2 font-mono">
-            ◈ spoiler: ti meriti tutto
-          </span>
-        </div>
-      </motion.article>
-    </section>
+      </SchematicPanel>
+    </div>
   )
 }
 

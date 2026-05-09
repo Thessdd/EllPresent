@@ -17,6 +17,7 @@ export default function SparkleCursor() {
   const reducedMotion = usePrefersReducedMotion()
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const [visible, setVisible] = useState(false)
+  const [glyph, setGlyph] = useState('+')
 
   const isCoarsePointer = useMemo(() => {
     return window.matchMedia?.('(pointer: coarse)')?.matches ?? false
@@ -28,6 +29,10 @@ export default function SparkleCursor() {
     const onMove = (e) => {
       setVisible(true)
       setPos({ x: e.clientX, y: e.clientY })
+      if ((e.movementX ?? 0) !== 0 || (e.movementY ?? 0) !== 0) {
+        const r = Math.random()
+        setGlyph(r < 0.72 ? '+' : r < 0.86 ? '◈' : r < 0.95 ? '○' : '·')
+      }
     }
     const onLeave = () => setVisible(false)
 
@@ -58,14 +63,16 @@ export default function SparkleCursor() {
       <div
         style={{
           transform: 'translate(-50%, -50%)',
-          color: 'var(--c-lime)',
+          color: 'var(--c-blue-light)',
           fontFamily: 'var(--font-mono)',
           fontSize: 14,
-          textShadow: '0 0 14px rgba(200,247,62,0.35)',
+          textShadow: '0 0 16px rgba(74,158,255,0.25)',
           mixBlendMode: 'screen',
         }}
       >
-        ✦
+        <span style={{ color: glyph === '◈' ? 'var(--c-lime)' : 'var(--c-blue-light)' }}>
+          {glyph}
+        </span>
       </div>
     </div>
   )
