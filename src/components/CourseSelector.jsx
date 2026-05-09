@@ -11,6 +11,23 @@ const spring = { type: 'spring', stiffness: 180, damping: 16 }
 
 const CONFETTI_COLORS = ['#f5e642', '#d42b2b', '#7fff00', '#f0e8d8', '#1a1612']
 
+const ghostStyle = {
+  position: 'absolute',
+  top: '-0.1em',
+  left: '-0.05em',
+  fontFamily: 'var(--font-slab)',
+  fontWeight: 900,
+  textTransform: 'uppercase',
+  fontSize: 'clamp(100px, 22vw, 200px)',
+  lineHeight: 0.85,
+  color: 'var(--c-paper)',
+  opacity: 0.05,
+  pointerEvents: 'none',
+  userSelect: 'none',
+  whiteSpace: 'nowrap',
+  zIndex: 0,
+}
+
 const COURSES = [
   {
     id: 'cinese',
@@ -72,57 +89,58 @@ export default function CourseSelector() {
   return (
     <motion.section
       id="setlist"
-      className="py-14 md:py-20"
+      className="relative overflow-hidden py-10 md:py-14"
       initial={reduced ? false : { opacity: 0, y: 20 }}
       whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={spring}
     >
-      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-red">// scegli la tua traccia //</p>
+      <span aria-hidden="true" style={ghostStyle}>
+        SCEGLI
+      </span>
 
-      <div className="mt-6 flex flex-wrap items-end gap-3">
-        <span className="font-slab text-[60px] font-black uppercase leading-none text-paper">seleziona</span>
-        <span
-          className="font-hand text-[50px] font-semibold text-yellow"
-          style={{ transform: 'rotate(1deg)', display: 'inline-block' }}
-        >
-          il corso
-        </span>
-      </div>
+      <div className="relative z-[1]">
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-paper/75">// scegli la tua traccia //</p>
 
-      <div className="mt-12 grid gap-5 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-start">
-        {cards.map((c, idx) => {
-          const isSelected = selected === c.id
-          const dim = Boolean(selected) && !isSelected
-          const offset = idx === 0 ? 'mt-0' : idx === 1 ? 'mt-0 md:mt-6' : 'mt-0 md:mt-3'
-          const borderTone = isSelected
-            ? 'border-2 border-lime bg-[rgba(127,255,0,0.04)]'
-            : c.featured
-              ? 'border-2 border-yellow'
-              : 'border border-paper/15'
+        <div className="mt-6 flex flex-wrap items-end gap-3">
+          <span className="font-slab text-[60px] font-black uppercase leading-none text-paper">seleziona</span>
+          <span
+            className="font-hand text-[50px] font-semibold text-yellow"
+            style={{ transform: 'rotate(1deg)', display: 'inline-block' }}
+          >
+            il corso
+          </span>
+        </div>
 
-          return (
-            <motion.article
-              key={c.id}
-              className={['relative overflow-visible rounded-none bg-[rgba(240,232,216,0.04)] p-6', borderTone, offset, dim ? 'opacity-40' : ''].join(
-                ' ',
-              )}
-              style={dim ? { filter: 'grayscale(0.4)' } : undefined}
-              initial={false}
-              whileHover={reduced || dim ? undefined : { y: -3 }}
-              animate={isSelected && !reduced ? { scale: 1.02 } : { scale: 1 }}
-              transition={spring}
-            >
+        <div className="mt-10 grid gap-5 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-start">
+          {cards.map((c, idx) => {
+            const isSelected = selected === c.id
+            const dim = Boolean(selected) && !isSelected
+            const offset = idx === 0 ? 'mt-0' : idx === 1 ? 'mt-0 md:mt-6' : 'mt-0 md:mt-3'
+            const borderTone = isSelected
+              ? 'border-2 border-lime bg-[rgba(127,255,0,0.04)]'
+              : c.featured
+                ? 'border-2 border-paper/35'
+                : 'border border-paper/15'
+
+            return (
+              <motion.article
+                key={c.id}
+                className={['relative z-[1] overflow-visible rounded-none bg-[rgba(240,232,216,0.04)] p-6', borderTone, offset, dim ? 'opacity-40' : ''].join(
+                  ' ',
+                )}
+                style={dim ? { filter: 'grayscale(0.4)' } : undefined}
+                initial={false}
+                whileHover={reduced || dim ? undefined : { y: -3 }}
+                animate={isSelected && !reduced ? { scale: 1.02 } : { scale: 1 }}
+                transition={spring}
+              >
                 {c.featured ? (
                   <>
-                    <div className="pointer-events-none absolute -left-2 -top-2 z-[1]">
-                      <TapeStrip x={0} y={0} rotation={-3} width={88} />
+                    <div className="pointer-events-none absolute -left-2 -top-2 z-[2]">
+                      <TapeStrip x={0} y={0} rotation={-3} width={88} tone="paper" />
                     </div>
-                    <StampBadge
-                      color="var(--c-red)"
-                      rotation={8}
-                      className="absolute -right-3 -top-4 z-[2] bg-bg"
-                    >
+                    <StampBadge color="var(--c-paper)" rotation={8} className="absolute -right-3 -top-4 z-[3] bg-bg">
                       ★ scelta di camilla
                     </StampBadge>
                   </>
@@ -134,9 +152,9 @@ export default function CourseSelector() {
 
                 <div className="relative mx-auto mb-4 h-[88px] w-[88px] smear">
                   <WobblyCircle
-                    color="var(--c-yellow)"
+                    color="var(--c-paper)"
                     strokeWidth={2}
-                    className="pointer-events-none absolute inset-0 h-full w-full scale-90"
+                    className="pointer-events-none absolute inset-0 h-full w-full scale-90 opacity-70"
                   />
                   <div className="relative z-[1] flex h-full items-center justify-center text-4xl">{c.emoji}</div>
                 </div>
@@ -176,30 +194,31 @@ export default function CourseSelector() {
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
-            </motion.article>
-          )
-        })}
+              </motion.article>
+            )
+          })}
+        </div>
+
+        <PunkDivider className="mt-10" />
+        <hr className="xerox-hr mt-2" />
+
+        <AnimatePresence>
+          {toast ? (
+            <motion.div
+              key="toast"
+              role="status"
+              aria-live="polite"
+              className="fixed inset-x-0 bottom-0 z-[70] bg-red py-4 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-paper"
+              initial={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
+              transition={reduced ? { duration: 0.12 } : { type: 'tween', duration: 0.2, ease: 'easeOut' }}
+            >
+              ★ scelta confermata — camilla la farà succedere ★
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </div>
-
-      <PunkDivider className="mt-16" />
-      <hr className="xerox-hr mt-2" />
-
-      <AnimatePresence>
-        {toast ? (
-          <motion.div
-            key="toast"
-            role="status"
-            aria-live="polite"
-            className="fixed inset-x-0 bottom-0 z-[70] bg-red py-4 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-paper"
-            initial={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={reduced ? { opacity: 0 } : { y: 56, opacity: 0 }}
-            transition={reduced ? { duration: 0.12 } : { type: 'tween', duration: 0.2, ease: 'easeOut' }}
-          >
-            ★ scelta confermata — camilla la farà succedere ★
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
     </motion.section>
   )
 }

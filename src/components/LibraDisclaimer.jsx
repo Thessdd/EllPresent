@@ -9,15 +9,15 @@ export default function LibraDisclaimer() {
 
   return (
     <motion.section
-      className="relative left-1/2 w-screen -translate-x-1/2 bg-red py-16 md:py-24"
+      className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-red py-12 md:py-16"
       initial={reduced ? false : { opacity: 0, y: 20, scale: 0.98 }}
       whileInView={reduced ? undefined : { opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={spring}
     >
-      <div className="relative mx-auto max-w-4xl px-5 text-center">
+      <div className="relative z-[1] mx-auto max-w-4xl px-5 text-center">
         <div className="font-slab text-[72px] font-black uppercase leading-none text-paper">⚖️ camilla</div>
-        <div className="mt-4 font-slab text-[48px] font-black uppercase leading-none text-yellow">è una</div>
+        <div className="mt-4 font-slab text-[48px] font-black uppercase leading-none text-paper">è una</div>
         <div className="mt-2 font-slab text-[clamp(56px,12vw,96px)] font-black uppercase tracking-[-0.02em] text-paper">
           bilancia
         </div>
@@ -30,13 +30,13 @@ export default function LibraDisclaimer() {
         </p>
 
         <div className="mt-12 flex justify-end md:mt-16">
-          <StampBadge color="var(--c-yellow)" rotation={-5} className="bg-red">
+          <StampBadge color="var(--c-paper)" rotation={-5} className="bg-red">
             indecisione certificata
           </StampBadge>
         </div>
       </div>
 
-      <PunkDivider invert className="mt-14" />
+      <PunkDivider invert className="mt-10" />
       <hr className="mx-auto max-w-6xl border-0 opacity-90" style={{ height: 1, background: 'rgba(240,232,216,0.18)' }} />
     </motion.section>
   )

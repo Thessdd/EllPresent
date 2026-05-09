@@ -5,6 +5,9 @@ import TapeStrip from './TapeStrip.jsx'
 
 const spring = { type: 'spring', stiffness: 180, damping: 16 }
 
+const MARQUEE_LINE =
+  '★ ELL 26 ★ QUEER ★ VEGETARIANA ★ PUNK ★ DA CAMILLA CON AMORE ★\u00a0★ ELL 26 ★ QUEER ★ VEGETARIANA ★ PUNK ★ DA CAMILLA CON AMORE ★\u00a0'
+
 export default function Hero() {
   const reduced = useReducedMotion()
 
@@ -18,22 +21,8 @@ export default function Hero() {
       id="hero"
       className="relative left-1/2 w-screen min-h-screen -translate-x-1/2 overflow-hidden bg-bg"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.055]"
-        style={{
-          backgroundImage: `repeating-linear-gradient(
-            45deg,
-            rgba(240,232,216,0.14) 0px,
-            rgba(240,232,216,0.14) 1px,
-            transparent 1px,
-            transparent 14px
-          )`,
-        }}
-      />
-
       <motion.div
-        className="w-full bg-red py-2.5 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-paper"
+        className="relative z-[1] w-full bg-red py-2.5 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-paper"
         initial={reduced ? false : { opacity: 0, y: -12 }}
         animate={reduced ? false : { opacity: 1, y: 0 }}
         transition={reduced ? undefined : spring}
@@ -41,11 +30,15 @@ export default function Hero() {
         ★ evento speciale ★ ingresso: gratuito ★ data: 2025 ★
       </motion.div>
 
-      <div className="relative mx-auto max-w-6xl px-5 pb-8 pt-6 md:pb-12 md:pt-10">
+      <div className="relative z-[1] mx-auto max-w-6xl px-5 pb-6 pt-5 md:pb-8 md:pt-8">
         <div className="relative z-[2] min-h-[58vh] max-w-[920px]">
           <motion.div
-            className="font-slab text-[clamp(56px,14vw,110px)] font-black uppercase leading-[0.92] text-paper"
-            style={{ transform: 'rotate(-3deg)', transformOrigin: '0% 50%' }}
+            className="font-slab font-black uppercase leading-[0.92] text-paper"
+            style={{
+              fontSize: 'clamp(72px, 18vw, 140px)',
+              transform: 'rotate(-3deg)',
+              transformOrigin: '0% 50%',
+            }}
             initial={fly(0)}
             animate={settle(-3)}
             transition={reduced ? undefined : { ...spring, delay: 0.08 }}
@@ -54,8 +47,12 @@ export default function Hero() {
           </motion.div>
 
           <motion.div
-            className="-mt-2 font-hand text-[clamp(72px,18vw,130px)] font-semibold italic leading-[0.9] text-yellow sm:-mt-4"
-            style={{ transform: 'rotate(2deg)', transformOrigin: '0% 50%' }}
+            className="-mt-2 font-hand font-semibold italic leading-[0.9] text-yellow sm:-mt-4"
+            style={{
+              fontSize: 'clamp(88px, 22vw, 160px)',
+              transform: 'rotate(2deg)',
+              transformOrigin: '0% 50%',
+            }}
             initial={fly(1)}
             animate={settle(2)}
             transition={reduced ? undefined : { ...spring, delay: 0.16 }}
@@ -64,8 +61,9 @@ export default function Hero() {
           </motion.div>
 
           <motion.div
-            className="-mt-1 font-slab text-[clamp(72px,20vw,140px)] font-black uppercase leading-[0.88]"
+            className="-mt-1 font-slab font-black uppercase leading-[0.88]"
             style={{
+              fontSize: 'clamp(88px, 24vw, 170px)',
               WebkitTextStroke: '2px var(--c-lime)',
               color: 'transparent',
               transform: 'rotate(-1deg)',
@@ -79,7 +77,7 @@ export default function Hero() {
           </motion.div>
 
           <motion.div
-            className="mt-1 font-hand text-[80px] leading-none text-red"
+            className="mt-1 font-hand text-[140px] leading-none text-paper"
             style={{ transform: 'rotate(5deg)', transformOrigin: '0% 50%' }}
             initial={fly(3)}
             animate={settle(5)}
@@ -89,7 +87,7 @@ export default function Hero() {
           </motion.div>
 
           <motion.p
-            className="mt-8 max-w-xl font-hand text-[32px] text-muted"
+            className="mt-8 max-w-xl font-hand text-[36px] text-muted md:text-[42px]"
             style={{ transform: 'rotate(-1.5deg)' }}
             initial={reduced ? false : { opacity: 0, y: 16, x: -8 }}
             animate={reduced ? false : { opacity: 1, y: 0, x: 0 }}
@@ -123,7 +121,7 @@ export default function Hero() {
             transition={reduced ? undefined : { ...spring, delay: 0.44 }}
             aria-hidden="true"
           >
-            <TapeStrip x={0} y={0} rotation={-2} width={100} tone="lime" />
+            <TapeStrip x={0} y={0} rotation={-2} width={100} />
           </motion.div>
 
           <motion.div
@@ -142,7 +140,7 @@ export default function Hero() {
             animate={reduced ? false : { scale: 1, rotate: -9, opacity: 1 }}
             transition={reduced ? undefined : { ...spring, delay: 0.5 }}
           >
-            <StampBadge color="var(--c-red)" rotation={-9}>
+            <StampBadge color="var(--c-paper)" rotation={-9}>
               queer ★ punk
             </StampBadge>
           </motion.div>
@@ -152,15 +150,32 @@ export default function Hero() {
             animate={reduced ? false : { scale: 1, rotate: 6, opacity: 1 }}
             transition={reduced ? undefined : { ...spring, delay: 0.46 }}
           >
-            <StampBadge color="var(--c-lime)" rotation={6}>
+            <StampBadge color="var(--c-paper)" rotation={6}>
               vegetariana
             </StampBadge>
           </motion.div>
         </div>
       </div>
 
-      <PunkDivider />
-      <hr className="xerox-hr mx-auto max-w-6xl" />
+      <div className="relative z-[1] left-1/2 mt-8 w-screen -translate-x-1/2 overflow-hidden border-y-2 border-paper/20 bg-red py-3">
+        {reduced ? (
+          <div className="whitespace-nowrap px-5 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-paper">
+            {MARQUEE_LINE}
+          </div>
+        ) : (
+          <div className="flex w-max animate-marquee font-mono text-[11px] uppercase tracking-[0.3em] text-paper">
+            <span className="shrink-0 pr-16">{MARQUEE_LINE}</span>
+            <span className="shrink-0 pr-16" aria-hidden="true">
+              {MARQUEE_LINE}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="relative z-[1]">
+        <PunkDivider />
+        <hr className="xerox-hr mx-auto max-w-6xl" />
+      </div>
     </section>
   )
 }

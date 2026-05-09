@@ -19,6 +19,15 @@ export default {
         white: 'var(--c-white)',
         muted: 'var(--c-muted)',
       },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        marquee: 'marquee 22s linear infinite',
+      },
     },
   },
   plugins: [],

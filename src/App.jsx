@@ -18,7 +18,7 @@ export default function App() {
         Salta al regalo
       </a>
 
-      <main className="relative mx-auto max-w-6xl px-5">
+      <main className="relative mx-auto max-w-6xl px-4 sm:px-5">
         <Hero />
         <GiftReveal />
         <LibraDisclaimer />

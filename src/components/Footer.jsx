@@ -24,7 +24,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative left-1/2 mt-16 w-screen -translate-x-1/2 border-t border-paper/[0.08] bg-ink py-10">
+    <footer className="relative left-1/2 mt-10 w-screen -translate-x-1/2 border-t border-paper/[0.08] bg-ink py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 md:flex-row md:items-center md:justify-between">
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">progetto ell-26 © camilla 2025</div>
         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted md:text-right">⚖️ bilancia certificata</div>

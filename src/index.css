@@ -22,7 +22,12 @@ html{ scroll-behavior:smooth; }
 
 body{
   margin:0;
-  background:var(--c-bg);
+  background-color: var(--c-bg);
+  background-image: url('https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: multiply;
   color:var(--c-paper);
   font-family:var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   overflow-x:hidden;
@@ -30,17 +35,22 @@ body{
 
 ::selection{ background:rgba(245,230,66,0.22); }
 
-/* PAPER TEXTURE (body::before) */
+/* Diagonal stripe layer (replaces SVG noise) */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   z-index:0;
   pointer-events:none;
-  opacity:0.06;
-  mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  background-size:220px 220px;
+  opacity:0.9;
+  mix-blend-mode:normal;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(240,232,216,0.04) 0px,
+    rgba(240,232,216,0.04) 1px,
+    transparent 1px,
+    transparent 16px
+  );
 }
 
 /* GRAIN OVERLAY (body::after) */
@@ -50,7 +60,7 @@ body::after{
   inset:0;
   z-index:51;
   pointer-events:none;
-  opacity:0.18;
+  opacity:0.26;
   mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)' opacity='1'/%3E%3C/svg%3E");
   background-size:150px 150px;
@@ -82,13 +92,13 @@ body::after{
 /* Stamp */
 .stamp{
   display:inline-block;
-  border:2px solid currentColor;
+  border:2.5px solid currentColor;
   padding: 4px 12px;
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  opacity: 0.85;
+  letter-spacing: 0.22em;
+  opacity: 1;
   background: rgba(14,12,10,0.12);
   user-select:none;
 }
@@ -112,5 +122,5 @@ body::after{
 
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
+  .animate-marquee{ animation: none !important; }
 }
-
